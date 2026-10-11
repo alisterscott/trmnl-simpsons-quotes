@@ -49,7 +49,7 @@ custom_fields:
   category: art,humor
   description: Displays a randomly selected quote from The Simpsons with the speaking character's name and artwork. Choose one or more characters in the plugin settings to limit the quotes, or leave the selection empty for a mix from everyone. The layout adapts to full, half, and quadrant views, including portrait screens.
   github_url: https://github.com/alisterscott/trmnl-simpsons-quotes
-  email: alister.scott@gmail.com
+  email_address: alister.scott@gmail.com
 name: Simpsons Quotes
 description: A random quote from The Simpsons.
 refresh_interval: 15
