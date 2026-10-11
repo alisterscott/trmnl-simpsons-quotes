@@ -114,20 +114,22 @@ eligible. The selection is recalculated on each render.
 
 ## Quote layout
 
-All widget sizes use the shared layout in
-[`src/shared.liquid`](./src/shared.liquid). It keeps the quote and character
-image side by side in landscape, with an approximately 80/20 split, and stacks
-them in portrait. In portrait, the quote and author are vertically centered in
-the upper section while the larger lower section gives the character image
-more room. The Framework 3.4 content limiter reduces quote typography
-for smaller view areas, and responsive line clamps keep long quotes from
-overlapping the character name. Portrait clamp limits are lower to make room
-for the author, so long quotes truncate consistently without reducing the
-character image. A small left inset protects the opening characters from
-being clipped by device font-rendering differences. Character artwork keeps
-its aspect ratio, has descriptive alt text, and uses Framework's `image-dither`
-utility so it can be adapted to limited-palette displays while retaining color
-on color-capable devices.
+Each required view has a complete, self-contained template:
+[`src/full.liquid`](./src/full.liquid),
+[`src/half_horizontal.liquid`](./src/half_horizontal.liquid),
+[`src/half_vertical.liquid`](./src/half_vertical.liquid), and
+[`src/quadrant.liquid`](./src/quadrant.liquid). They keep the quote and
+character image side by side in landscape, with an approximately 80/20 split
+(75/25 on larger screens), and stack them in portrait. In portrait, the quote
+and author are vertically centered in the upper section while the larger lower
+section gives the character image more room. Framework 3.4's content limiter
+reduces quote typography for smaller view areas, and responsive line clamps
+keep long quotes from overlapping the character name. The quote text scales
+up on large screens, and portrait clamp limits leave room for the author. A
+small left inset protects the opening characters from device font-rendering
+differences. Character artwork keeps its aspect ratio, has descriptive alt
+text, and uses Framework's `image-dither` utility so it can be adapted to
+limited-palette displays while retaining color on color-capable devices.
 
 The local preview and Playwright tests use `.trmnlp.yml` for their selected
 character values. The same static quote data is used by the hosted renderer
