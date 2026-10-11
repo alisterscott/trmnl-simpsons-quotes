@@ -12,4 +12,7 @@ custom_fields: {}
 # override variables
 variables:
   trmnl: {}
-  temp: "example"
+  quote_text: "A sample quote is shown here."
+  character:
+    name: "Homer Simpson"
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original"

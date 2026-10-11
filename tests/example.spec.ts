@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import fs from "fs";
 import path from "path";
 
-test("can see all the views", async ({ page }) => {
+test("renders the shared quote layout in all views", async ({ page }) => {
   const sourceFile = path.join(__dirname, "example.trmnlp.yml");
   const destFile = path.join(__dirname, "..", ".trmnlp.yml");
 
@@ -25,9 +25,14 @@ test("can see all the views", async ({ page }) => {
       await test.step(`Testing route: ${route}`, async () => {
         await page.goto(route);
         const trmnlFrame = page.frameLocator("iframe");
-        await expect
-          .soft(trmnlFrame.locator("div.view"))
-          .toContainText(route.replace("/", "").replace("_", " "));
+        const view = trmnlFrame.locator("div.view");
+        await expect(view).toContainText("A sample quote is shown here.");
+        await expect(view).toContainText("Homer Simpson");
+        await expect(view.locator("img")).toHaveAttribute(
+          "src",
+          "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original",
+        );
+        await expect(view.locator('[data-content-limiter="true"]')).toBeVisible();
       });
     }
   } finally {
