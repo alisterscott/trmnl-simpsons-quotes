@@ -102,9 +102,15 @@ characters. The setting uses character IDs from
 
 To add a character to the setting, add its record to `src/characters.json` and
 add a matching `Name: character-id` option under `custom_fields` in
-`src/settings.yml`. During rendering, the plugin selects a random quote from
-the selected characters' quote pool. With no selections, all characters with
-quotes are eligible.
+`src/settings.yml`. Also add that character's `id`, `name`, `imageUrl`, and
+`quotes` to the `static_data` JSON in the same settings file. The Playwright
+suite checks that the static data stays synchronized with the character
+catalog. The static data is required because hosted TRMNL rendering cannot
+load the local JSON file or the preview-only Ruby filters.
+
+During rendering, native Liquid selects a random quote from the selected
+characters' quote pool. With no selections, all characters with quotes are
+eligible. The selection is recalculated on each render.
 
 ## Quote layout
 
@@ -115,15 +121,17 @@ them in portrait. In portrait, the quote and author are vertically centered in
 the upper section while the larger lower section gives the character image
 more room. The Framework 3.4 content limiter reduces quote typography
 for smaller view areas, and responsive line clamps keep long quotes from
-overlapping the character name. Character artwork keeps its aspect ratio, has
+overlapping the character name. Portrait clamp limits are lower to make room
+for the author, so long quotes truncate consistently without reducing the
+character image. Character artwork keeps its aspect ratio, has
 descriptive alt text, and uses Framework's `image-dither` utility so it can be
 adapted to limited-palette displays while retaining color on color-capable
 devices.
 
 The local preview and Playwright tests use `.trmnlp.yml` for their selected
-character values. Quote text and character artwork come from the shared
-`src/characters.json` catalog. To preview a selection locally, set the custom
-field in `.trmnlp.yml`; omit it or leave it empty to include all characters:
+character values. The same static quote data is used by the hosted renderer
+and the local preview. To preview a selection locally, set the custom field
+in `.trmnlp.yml`; omit it or leave it empty to include all characters:
 
 ```yaml
 custom_fields:

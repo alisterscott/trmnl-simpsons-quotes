@@ -2,7 +2,7 @@
   {
     "id": "homer-simpson",
     "name": "Homer Simpson",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png",
     "imagePageUrl": "https://en.wikipedia.org/wiki/File:Homer_Simpson_2006.png",
     "quotes": [
       "Marge, it takes two to lie. One to lie and one to listen.",
@@ -26,7 +26,7 @@
   {
     "id": "chief-wiggum",
     "name": "Chief Wiggum",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/7/7a/Chief_Wiggum.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/7/7a/Chief_Wiggum.png",
     "imagePageUrl": "https://en.wikipedia.org/wiki/File:Chief_Wiggum.png",
     "quotes": [
       "This is Papa Bear. Put out an APB for a male suspect, driving a... car of some sort, heading in the direction of... you know, that place that sells chili. Suspect is hatless. Repeat, hatless.",
@@ -41,7 +41,7 @@
   {
     "id": "ralph-wiggum",
     "name": "Ralph Wiggum",
-    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/1/14/Ralph_Wiggum.png?utm_source=en.wikipedia.org&utm_campaign=index&utm_content=original",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/1/14/Ralph_Wiggum.png",
     "imagePageUrl": "https://en.wikipedia.org/wiki/File:Ralph_Wiggum.png",
     "quotes": [
       "The Leperachaun tells me to burn things!",

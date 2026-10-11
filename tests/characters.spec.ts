@@ -29,42 +29,64 @@ test("character catalog contains extensible records", () => {
   }
 });
 
-test("random quote selection respects character filters", () => {
+test("host static data matches the editable character catalog", () => {
   const projectRoot = path.join(__dirname, "..");
-  const filterScript = `
-    require 'simpsons_quotes_filters'
+  const staticDataScript = `
+    require 'yaml'
     require 'json'
-    filter = Object.new.extend(SimpsonsQuotesFilters)
-    puts JSON.generate(filter.random_simpsons_quote('', JSON.parse(ARGV.fetch(0))))
+    settings = YAML.load_file('src/settings.yml')
+    abort 'quote data requires static strategy' unless settings.fetch('strategy') == 'static'
+    puts JSON.parse(settings.fetch('static_data')).to_json
   `;
 
-  for (const selectedIds of [
-    ["homer-simpson"],
-    ["chief-wiggum"],
-    ["ralph-wiggum"],
-    ["chief-wiggum", "ralph-wiggum"],
-    "chief-wiggum,ralph-wiggum",
-    [],
-  ]) {
-    const selectedQuote = JSON.parse(
-      execFileSync(
-        "bundle",
-        ["exec", "ruby", "-Isrc", "-e", filterScript, JSON.stringify(selectedIds)],
-        { cwd: projectRoot, encoding: "utf-8" },
-      ),
+  const staticData = JSON.parse(
+    execFileSync("bundle", ["exec", "ruby", "-e", staticDataScript], {
+      cwd: projectRoot,
+      encoding: "utf-8",
+    }),
+  ) as { characters: Character[] };
+
+  expect(staticData.characters).toEqual(
+    characters.map(({ id, name, imageUrl, quotes }) => ({ id, name, imageUrl, quotes })),
+  );
+});
+
+test("native Liquid quote selection respects character filters", () => {
+  const projectRoot = path.join(__dirname, "..");
+  const renderScript = `
+    require 'trmnlp'
+    require 'json'
+    context = TRMNLP::Context.new(Dir.pwd)
+    data = context.user_data
+    data['trmnl']['plugin_settings']['custom_fields_values']['character_ids'] = ARGV.fetch(0)
+    template = Liquid::Template.parse(
+      File.read('src/shared.liquid'),
+      environment: TRMNL::Liquid.build_environment
+    )
+    puts template.render(data)
+  `;
+
+  for (const [selectedIds, allowedIds] of [
+    ["homer-simpson", ["homer-simpson"]],
+    ["chief-wiggum", ["chief-wiggum"]],
+    ["ralph-wiggum", ["ralph-wiggum"]],
+    ["chief-wiggum,ralph-wiggum", ["chief-wiggum", "ralph-wiggum"]],
+    ["", characters.map((character) => character.id)],
+  ] as const) {
+    const rendered = execFileSync(
+      "bundle",
+      ["exec", "ruby", "-e", renderScript, selectedIds],
+      { cwd: projectRoot, encoding: "utf-8" },
+    );
+    const selectedCharacter = characters.find((character) =>
+      rendered.includes(`alt="${character.name}"`),
     );
 
-    const character = characters.find(
-      (candidate: Character) => candidate.id === selectedQuote.character.id,
-    );
-    expect(character).toBeDefined();
-    if (!character) {
-      throw new Error(`Character ${selectedQuote.character.id} is not in the catalog`);
+    expect(selectedCharacter).toBeDefined();
+    if (!selectedCharacter) {
+      throw new Error("Liquid did not render a character image");
     }
-    expect(character.quotes).toContain(selectedQuote.text);
-    if (selectedIds.length > 0) {
-      const allowedIds = Array.isArray(selectedIds) ? selectedIds : selectedIds.split(",");
-      expect(allowedIds).toContain(selectedQuote.character.id);
-    }
+    expect(allowedIds).toContain(selectedCharacter.id);
+    expect(rendered).toContain(selectedCharacter.imageUrl);
   }
 });

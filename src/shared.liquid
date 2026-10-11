@@ -1,6 +1,30 @@
 
-{% assign selected_character_ids = trmnl.plugin_settings.custom_fields_values.character_ids %}
-{% assign quote = '' | random_simpsons_quote: selected_character_ids %}
+{% assign selected_character_ids_value = trmnl.plugin_settings.custom_fields_values.character_ids %}
+{% assign selected_character_ids = selected_character_ids_value | split: ',' %}
+{% assign eligible_quote_count = 0 %}
+
+{% for character in characters %}
+  {% if selected_character_ids_value == blank or selected_character_ids contains character.id %}
+    {% assign eligible_quote_count = eligible_quote_count | plus: character.quotes.size %}
+  {% endif %}
+{% endfor %}
+
+{% if eligible_quote_count > 0 %}
+  {% assign quote_index = 'now' | date: '%s' | modulo: eligible_quote_count %}
+  {% assign selected_quote = '' %}
+  {% assign selected_character = '' %}
+
+  {% for character in characters %}
+    {% if selected_character_ids_value == blank or selected_character_ids contains character.id %}
+      {% for character_quote in character.quotes %}
+        {% if quote_index == 0 %}
+          {% assign selected_quote = character_quote %}
+          {% assign selected_character = character %}
+        {% endif %}
+        {% assign quote_index = quote_index | minus: 1 %}
+      {% endfor %}
+    {% endif %}
+  {% endfor %}
 <div class="layout h--full">
   <div class="flex flex--row portrait:flex--col flex--stretch h--full">
     <section class="w--[80cqw] portrait:w--full h--full portrait:h--[65cqh] flex flex--col flex--top portrait:flex--center">
@@ -15,24 +39,31 @@
           data-clamp-sm="4"
           data-clamp-md="5"
           data-clamp-lg="7"
-          data-clamp-portrait="5"
-          data-clamp-sm-portrait="5"
-          data-clamp-md-portrait="7"
-          data-clamp-lg-portrait="9"
+          data-clamp-portrait="4"
+          data-clamp-sm-portrait="4"
+          data-clamp-md-portrait="4"
+          data-clamp-lg-portrait="5"
         >
-          &ldquo;{{ quote.text | escape }}&rdquo;
+          &ldquo;{{ selected_quote | escape }}&rdquo;
         </blockquote>
       </div>
       <p class="text--base md:text--large" data-testid="character-name">
-        {{ quote.character.name | escape }}
+        {{ selected_character.name | escape }}
       </p>
     </section>
     <div class="w--[20cqw] portrait:w--full h--full portrait:h--[35cqh] flex flex--center">
       <img
         class="image image--contain image-dither w--full h--full"
-        src="{{ quote.character.imageUrl | escape }}"
-        alt="{{ quote.character.name | escape }}"
+        src="{{ selected_character.imageUrl | escape }}"
+        alt="{{ selected_character.name | escape }}"
       >
     </div>
   </div>
 </div>
+{% else %}
+<div class="layout h--full">
+  <div class="content">
+    <p class="text--base">No quotes found for the selected characters.</p>
+  </div>
+</div>
+{% endif %}

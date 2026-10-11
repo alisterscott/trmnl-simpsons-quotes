@@ -15,69 +15,106 @@ const characters = JSON.parse(
 const homer = characters.find((character) => character.id === "homer-simpson");
 
 test("renders a selected character's random quote in all views", async ({ page }) => {
-  const sourceFile = path.join(__dirname, "example.trmnlp.yml");
-  const destFile = path.join(__dirname, "..", ".trmnlp.yml");
+  const routes = ["/quadrant", "/full", "/half_vertical", "/half_horizontal"];
 
-  if (!fs.existsSync(sourceFile)) {
-    throw new Error(`Source file not found: ${sourceFile}`);
+  for (const route of routes) {
+    await test.step(`Testing route: ${route}`, async () => {
+      await page.goto(route);
+      const trmnlFrame = page.frameLocator("iframe");
+      const view = trmnlFrame.locator("div.view");
+      const quote = view.locator("blockquote");
+      await expect(quote).toBeVisible();
+      const quoteContainer = view.locator('[data-content-limiter="true"]');
+      const quoteBox = await quoteContainer.boundingBox();
+      const name = view.getByTestId("character-name");
+      const nameBox = await name.boundingBox();
+      expect(quoteBox).not.toBeNull();
+      expect(nameBox).not.toBeNull();
+      if (!quoteBox || !nameBox) {
+        throw new Error("Quote or character name has no layout box");
+      }
+      expect(quoteBox.y + quoteBox.height).toBeLessThanOrEqual(nameBox.y);
+
+      const quoteText = (await quote.innerText())
+        .trim()
+        .replace(/^“/, "")
+        .replace(/(?:\.{3}|…)\s*$/, "")
+        .replace(/”$/, "");
+      const characterName = (await name.innerText()).trim();
+      const character = characters.find((candidate) => candidate.name === characterName);
+      expect(character, `Character ${characterName} is missing from the catalog`).toBeDefined();
+      if (!character) {
+        throw new Error(`Character ${characterName} is missing from the catalog`);
+      }
+      expect(
+        character.quotes.some((candidate) => candidate.startsWith(quoteText)),
+        `Rendered quote prefix did not match ${characterName}: ${JSON.stringify(quoteText)}`,
+      ).toBe(true);
+      await expect(view.locator("img")).toHaveAttribute("src", character.imageUrl);
+      await expect(view.locator("img")).toHaveAttribute("alt", characterName);
+      await expect(view.locator("img")).toHaveClass(/image--contain/);
+      await expect(view.locator("img")).toHaveClass(/image-dither/);
+      await expect(quoteContainer).toBeVisible();
+    });
+  }
+});
+
+test("portrait quadrant truncates long quotes to fit above the character name", async ({ page }) => {
+  if (!homer) {
+    throw new Error("Homer Simpson is missing from the character catalog");
   }
 
-  if (!fs.existsSync(destFile)) {
-    throw new Error(`Destination file not found: ${destFile}`);
-  }
+  const longestQuote = homer.quotes.reduce((longest, quote) =>
+    quote.length > longest.length ? quote : longest,
+  );
+  const escapedQuote = longestQuote
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
-  const originalContent = fs.readFileSync(destFile, "utf-8"); // Save original content to restore later
+  await page.route("**/render/quadrant.html*", async (route) => {
+    const response = await route.fetch();
+    const html = await response.text();
+    const longQuoteHtml = html.replace(
+      /(<blockquote\b[^>]*>)[\s\S]*?(<\/blockquote>)/,
+      `$1&ldquo;${escapedQuote}&rdquo;$2`,
+    );
 
-  fs.copyFileSync(sourceFile, destFile);
-
-  try {
-    const testConfig = fs
-      .readFileSync(destFile, "utf-8")
-      .replace("custom_fields: {}", "custom_fields:\n  character_ids: homer-simpson");
-    fs.writeFileSync(destFile, testConfig, "utf-8");
-    const routes = ["/quadrant", "/full", "/half_vertical", "/half_horizontal"];
-
-    for (const route of routes) {
-      await test.step(`Testing route: ${route}`, async () => {
-        await page.goto(route);
-        const trmnlFrame = page.frameLocator("iframe");
-        const view = trmnlFrame.locator("div.view");
-        const quote = view.locator("blockquote");
-        await expect(quote).toBeVisible();
-        await expect(quote).toHaveAttribute("data-clamp-sm", "4");
-        const quoteContainer = view.locator('[data-content-limiter="true"]');
-        const quoteBox = await quoteContainer.boundingBox();
-        const nameBox = await view.getByTestId("character-name").boundingBox();
-        expect(quoteBox).not.toBeNull();
-        expect(nameBox).not.toBeNull();
-        if (!quoteBox || !nameBox) {
-          throw new Error("Quote or character name has no layout box");
-        }
-        expect(quoteBox.y + quoteBox.height).toBeLessThanOrEqual(nameBox.y);
-        const quoteText = (await quote.innerText())
-          .trim()
-          .replace(/^“/, "")
-          .replace(/(?:\.{3}|…)\s*$/, "")
-          .replace(/”$/, "");
-        if (!homer) {
-          throw new Error("Homer Simpson is missing from the character catalog");
-        }
-        expect(
-          homer.quotes.some((candidate) => candidate.startsWith(quoteText)),
-          `Rendered quote prefix did not match Homer catalog: ${JSON.stringify(quoteText)}`,
-        ).toBe(true);
-        await expect(view).toContainText("Homer Simpson");
-        await expect(view.locator("img")).toHaveAttribute(
-          "src",
-          "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original",
-        );
-        await expect(view.locator("img")).toHaveAttribute("alt", "Homer Simpson");
-        await expect(view.locator("img")).toHaveClass(/image--contain/);
-        await expect(view.locator("img")).toHaveClass(/image-dither/);
-        await expect(quoteContainer).toBeVisible();
-      });
+    if (html === longQuoteHtml) {
+      throw new Error("Could not inject the long quote into the quadrant preview");
     }
-  } finally {
-    fs.writeFileSync(destFile, originalContent, "utf-8"); // Restore original content
+
+    await route.fulfill({ response, body: longQuoteHtml });
+  });
+
+  await page.goto(
+    "/render/quadrant.html?screen_classes=screen%20screen--1bit%20screen--ogv2%20screen--md%20screen--portrait%20screen--1x",
+    { waitUntil: "domcontentloaded" },
+  );
+
+  const view = page.locator("div.view");
+  const quote = view.locator("blockquote");
+  const quoteContainer = view.locator('[data-content-limiter="true"]');
+  const name = view.getByTestId("character-name");
+
+  await expect(quote).toBeVisible();
+  await expect(quote).toContainText(/(?:\.\.\.|…)\s*$/);
+
+  const renderedQuote = (await quote.innerText()).replace(/^“|”$/g, "");
+  expect(renderedQuote.length).toBeLessThan(longestQuote.length);
+
+  const quoteBox = await quote.boundingBox();
+  const containerBox = await quoteContainer.boundingBox();
+  const nameBox = await name.boundingBox();
+  expect(quoteBox).not.toBeNull();
+  expect(containerBox).not.toBeNull();
+  expect(nameBox).not.toBeNull();
+  if (!quoteBox || !containerBox || !nameBox) {
+    throw new Error("Quote or character name has no layout box");
   }
+
+  expect(quoteBox.height).toBeLessThanOrEqual(containerBox.height);
+  expect(containerBox.y + containerBox.height).toBeLessThanOrEqual(nameBox.y);
 });
