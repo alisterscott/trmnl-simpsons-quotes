@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "github.copilot-chat",
+    "dbaeumer.vscode-eslint",
+    "ms-playwright.playwright",
+    "esbenp.prettier-vscode",
+    "sissel.shopify-liquid",
+    "github.vscode-github-actions"
+  ],
+  "unwantedRecommendations": []
+}

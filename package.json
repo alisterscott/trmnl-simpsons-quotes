@@ -1,0 +1,24 @@
+{
+  "name": "trmnl-template",
+  "version": "1.0.0",
+  "description": "A template project for a TRMNL plugin inc. Playwright Tests",
+  "homepage": "https://github.com/alisterscott/trmnl-template#readme",
+  "bugs": {
+    "url": "https://github.com/alisterscott/trmnl-template/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alisterscott/trmnl-template.git"
+  },
+  "license": "MIT",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "npx playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.0",
+    "@types/node": "^25.3.0"
+  }
+}
