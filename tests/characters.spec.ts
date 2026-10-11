@@ -17,7 +17,14 @@ const characters = JSON.parse(fs.readFileSync(catalogPath, "utf-8")) as Characte
 test("character catalog contains extensible records", () => {
   const ids = characters.map((character) => character.id);
 
-  expect(ids).toEqual(expect.arrayContaining(["homer-simpson", "chief-wiggum", "ralph-wiggum"]));
+  expect(ids).toEqual(
+    expect.arrayContaining([
+      "homer-simpson",
+      "marge-simpson",
+      "chief-wiggum",
+      "ralph-wiggum",
+    ]),
+  );
   expect(new Set(ids).size).toBe(ids.length);
 
   for (const character of characters) {
@@ -36,19 +43,25 @@ test("host static data matches the editable character catalog", () => {
     require 'json'
     settings = YAML.load_file('src/settings.yml')
     abort 'quote data requires static strategy' unless settings.fetch('strategy') == 'static'
-    puts JSON.parse(settings.fetch('static_data')).to_json
+    fields = settings.fetch('custom_fields').find { |field| field.fetch('keyname') == 'character_ids' }
+    options = fields.fetch('options').flat_map(&:to_a).to_h
+    puts JSON.generate({
+      characters: JSON.parse(settings.fetch('static_data')).fetch('characters'),
+      options: options
+    })
   `;
 
-  const staticData = JSON.parse(
+  const pluginData = JSON.parse(
     execFileSync("bundle", ["exec", "ruby", "-e", staticDataScript], {
       cwd: projectRoot,
       encoding: "utf-8",
     }),
-  ) as { characters: Character[] };
+  ) as { characters: Character[]; options: Record<string, string> };
 
-  expect(staticData.characters).toEqual(
+  expect(pluginData.characters).toEqual(
     characters.map(({ id, name, imageUrl, quotes }) => ({ id, name, imageUrl, quotes })),
   );
+  expect(pluginData.options).toHaveProperty("Marge Simpson", "marge-simpson");
 });
 
 test("native Liquid quote selection respects character filters", () => {
@@ -68,6 +81,7 @@ test("native Liquid quote selection respects character filters", () => {
 
   for (const [selectedIds, allowedIds] of [
     ["homer-simpson", ["homer-simpson"]],
+    ["marge-simpson", ["marge-simpson"]],
     ["chief-wiggum", ["chief-wiggum"]],
     ["ralph-wiggum", ["ralph-wiggum"]],
     ["chief-wiggum,ralph-wiggum", ["chief-wiggum", "ralph-wiggum"]],
