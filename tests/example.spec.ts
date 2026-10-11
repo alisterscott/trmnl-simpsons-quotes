@@ -70,7 +70,8 @@ test("renders a selected character's random quote in all views", async ({ page }
       await expect(view.locator("img")).toHaveAttribute("alt", characterName);
       await expect(view.locator("img")).toHaveClass(/image--contain/);
       await expect(view.locator("img")).toHaveClass(/image-dither/);
-      await expect(name).toHaveClass(/lg:text--xlarge/);
+      await expect(view.locator("img")).toHaveCSS("object-fit", "contain");
+      await expect(name).toHaveClass(/lg:text--xxlarge/);
       await expect(quoteContainer).toBeVisible();
     });
   }
@@ -126,10 +127,12 @@ test("long quotes truncate without hiding attribution in quadrant and half views
       const quote = view.locator("blockquote");
       const quoteContainer = view.locator('[data-content-limiter="true"]');
       const name = view.getByTestId("character-name");
+      const image = view.locator("img");
 
       await expect(quote).toBeVisible();
       await expect(quote).toContainText(/(?:\.\.\.|…)\s*$/);
       await expect(name).toBeVisible();
+      await expect(image).toHaveCSS("object-fit", "contain");
 
       const renderedQuote = (await quote.innerText()).replace(/^“|”$/g, "");
       expect(renderedQuote.length).toBeLessThan(injectedQuote.length);
