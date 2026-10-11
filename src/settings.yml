@@ -43,6 +43,12 @@ custom_fields:
   - Marge Simpson: marge-simpson
   - Chief Wiggum: chief-wiggum
   - Ralph Wiggum: ralph-wiggum
+- keyname: about
+  name: Plugin by Alister Scott
+  field_type: author_bio
+  category: art,humor
+  description: A random quote from The Simpsons.
+  github_url: https://github.com/alisterscott/trmnl-simpsons-quotes
 name: Simpsons Quotes
-description:
+description: A random quote from The Simpsons.
 refresh_interval: 15
