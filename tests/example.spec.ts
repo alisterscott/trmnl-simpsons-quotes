@@ -25,15 +25,31 @@ test("renders a selected character's random quote in all views", async ({ page }
       const quote = view.locator("blockquote");
       await expect(quote).toBeVisible();
       const quoteContainer = view.locator('[data-content-limiter="true"]');
-      const quoteBox = await quoteContainer.boundingBox();
+      const quoteTextBox = await quote.boundingBox();
+      const quoteContainerBox = await quoteContainer.boundingBox();
       const name = view.getByTestId("character-name");
       const nameBox = await name.boundingBox();
-      expect(quoteBox).not.toBeNull();
+      const firstTextInset = await quote.evaluate((element) => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        const firstTextRect = range.getClientRects()[0];
+        return firstTextRect
+          ? firstTextRect.left - element.getBoundingClientRect().left
+          : null;
+      });
+      const quotePaddingLeft = await quote.evaluate(
+        (element) => Number.parseFloat(getComputedStyle(element).paddingLeft),
+      );
+      expect(quoteTextBox).not.toBeNull();
+      expect(quoteContainerBox).not.toBeNull();
       expect(nameBox).not.toBeNull();
-      if (!quoteBox || !nameBox) {
+      expect(firstTextInset).not.toBeNull();
+      if (!quoteTextBox || !quoteContainerBox || !nameBox || firstTextInset === null) {
         throw new Error("Quote or character name has no layout box");
       }
-      expect(quoteBox.y + quoteBox.height).toBeLessThanOrEqual(nameBox.y);
+      expect(quotePaddingLeft).toBeGreaterThan(0);
+      expect(firstTextInset).toBeGreaterThanOrEqual(quotePaddingLeft - 1);
+      expect(quoteContainerBox.y + quoteContainerBox.height).toBeLessThanOrEqual(nameBox.y);
 
       const quoteText = (await quote.innerText())
         .trim()

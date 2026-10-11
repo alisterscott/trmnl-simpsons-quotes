@@ -123,10 +123,11 @@ more room. The Framework 3.4 content limiter reduces quote typography
 for smaller view areas, and responsive line clamps keep long quotes from
 overlapping the character name. Portrait clamp limits are lower to make room
 for the author, so long quotes truncate consistently without reducing the
-character image. Character artwork keeps its aspect ratio, has
-descriptive alt text, and uses Framework's `image-dither` utility so it can be
-adapted to limited-palette displays while retaining color on color-capable
-devices.
+character image. A small left inset protects the opening characters from
+being clipped by device font-rendering differences. Character artwork keeps
+its aspect ratio, has descriptive alt text, and uses Framework's `image-dither`
+utility so it can be adapted to limited-palette displays while retaining color
+on color-capable devices.
 
 The local preview and Playwright tests use `.trmnlp.yml` for their selected
 character values. The same static quote data is used by the hosted renderer
