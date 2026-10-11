@@ -28,8 +28,6 @@ jobs:
           bundler-cache: true
       - name: Install Ruby Dependencies
         run: bundle install
-      - name: Install trmnl_preview Gem
-        run: gem install trmnl_preview
       - name: Run Playwright Tests
         run: npx playwright test
       - name: Upload Playwright Report

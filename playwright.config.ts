@@ -29,7 +29,7 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: `APP_ENV=production trmnlp serve --port ${previewPort}`,
+    command: `APP_ENV=production bundle exec trmnlp serve --port ${previewPort}`,
     url: `http://localhost:${previewPort}`,
     reuseExistingServer: !process.env.CI,
   },
