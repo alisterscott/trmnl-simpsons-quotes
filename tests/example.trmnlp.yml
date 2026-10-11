@@ -9,10 +9,9 @@ watch:
 # values of custom fields (defined in src/settings.yml)
 custom_fields: {}
 
+custom_filters:
+  SimpsonsQuotesFilters: src/simpsons_quotes_filters.rb
+
 # override variables
 variables:
   trmnl: {}
-  quote_text: "A sample quote is shown here."
-  character:
-    name: "Homer Simpson"
-    imageUrl: "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original"

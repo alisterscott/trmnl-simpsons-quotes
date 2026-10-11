@@ -1,4 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
+
+const previewPort = Number(process.env.TRML_PREVIEW_PORT ?? 4567);
+if (!Number.isInteger(previewPort) || previewPort < 1 || previewPort > 65535) {
+  throw new Error("TRML_PREVIEW_PORT must be a valid TCP port");
+}
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -10,7 +16,7 @@ export default defineConfig({
   workers: 1,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:4567",
+    baseURL: `http://localhost:${previewPort}`,
     screenshot: "only-on-failure",
     trace: "on",
   },
@@ -23,8 +29,8 @@ export default defineConfig({
   ],
 
   webServer: {
-    command: "APP_ENV=production trmnlp serve",
-    url: "http://localhost:4567",
+    command: `APP_ENV=production trmnlp serve --port ${previewPort}`,
+    url: `http://localhost:${previewPort}`,
     reuseExistingServer: !process.env.CI,
   },
 });

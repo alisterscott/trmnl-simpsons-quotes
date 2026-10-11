@@ -102,8 +102,9 @@ characters. The setting uses character IDs from
 
 To add a character to the setting, add its record to `src/characters.json` and
 add a matching `Name: character-id` option under `custom_fields` in
-`src/settings.yml`. The quote renderer must apply the selected IDs when it
-chooses a quote.
+`src/settings.yml`. During rendering, the plugin selects a random quote from
+the selected characters' quote pool. With no selections, all characters with
+quotes are eligible.
 
 ## Quote layout
 
@@ -116,8 +117,15 @@ do not fit. Character artwork keeps its aspect ratio, has descriptive alt text,
 and uses Framework's `image-dither` utility so it can be adapted to
 limited-palette displays while retaining color on color-capable devices.
 
-The local preview and Playwright tests use sample values from `.trmnlp.yml`.
-These are preview fixtures, not quote-selection logic or deployed plugin data.
+The local preview and Playwright tests use `.trmnlp.yml` for their selected
+character values. Quote text and character artwork come from the shared
+`src/characters.json` catalog. To preview a selection locally, set the custom
+field in `.trmnlp.yml`; omit it or leave it empty to include all characters:
+
+```yaml
+custom_fields:
+  character_ids: homer-simpson,ralph-wiggum
+```
 
 ## Run the tests
 

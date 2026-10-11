@@ -1,28 +1,22 @@
 
-{% if quote_text and character.name and character.imageUrl %}
+{% assign selected_character_ids = trmnl.plugin_settings.custom_fields_values.character_ids %}
+{% assign quote = '' | random_simpsons_quote: selected_character_ids %}
 <div class="layout h--full">
   <div class="flex flex--row portrait:flex--col flex--stretch h--full">
     <section class="w--[80cqw] portrait:w--full h--full portrait:h--[80cqh] flex flex--col flex--center-y">
       <div class="content" data-content-limiter="true">
         <blockquote class="text--large md:text--xlarge lg:text--xxlarge">
-          &ldquo;{{ quote_text | escape }}&rdquo;
+          &ldquo;{{ quote.text | escape }}&rdquo;
         </blockquote>
       </div>
-      <p class="text--base md:text--large">{{ character.name | escape }}</p>
+      <p class="text--base md:text--large">{{ quote.character.name | escape }}</p>
     </section>
     <div class="w--[20cqw] portrait:w--full h--full portrait:h--[20cqh] flex flex--center">
       <img
         class="image image--contain image-dither w--full h--full"
-        src="{{ character.imageUrl | escape }}"
-        alt="{{ character.name | escape }}"
+        src="{{ quote.character.imageUrl | escape }}"
+        alt="{{ quote.character.name | escape }}"
       >
     </div>
   </div>
 </div>
-{% else %}
-<div class="layout h--full">
-  <div class="content">
-    <p class="text--base">A quote and character image will appear here.</p>
-  </div>
-</div>
-{% endif %}
