@@ -1,5 +1,12 @@
 
 {% assign selected_character_ids_value = trmnl.plugin_settings.custom_fields_values.character_ids %}
+{% assign selected_character_ids_value = selected_character_ids_value
+  | join: ','
+  | remove: '['
+  | remove: ']'
+  | remove: '"'
+  | remove: ' '
+%}
 {% assign selected_character_ids = selected_character_ids_value | split: ',' %}
 {% assign eligible_quote_count = 0 %}
 

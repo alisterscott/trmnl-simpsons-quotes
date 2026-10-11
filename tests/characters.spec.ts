@@ -82,6 +82,7 @@ test("native Liquid quote selection respects character filters", () => {
   for (const [selectedIds, allowedIds] of [
     ["homer-simpson", ["homer-simpson"]],
     ["marge-simpson", ["marge-simpson"]],
+    ['["marge-simpson"]', ["marge-simpson"]],
     ["chief-wiggum", ["chief-wiggum"]],
     ["ralph-wiggum", ["ralph-wiggum"]],
     ["chief-wiggum,ralph-wiggum", ["chief-wiggum", "ralph-wiggum"]],

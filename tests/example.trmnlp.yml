@@ -7,8 +7,7 @@ watch:
   - src
 
 # values of custom fields (defined in src/settings.yml)
-custom_fields:
-  character_ids: homer-simpson
+custom_fields: { character_ids: ["homer-simpson"] }
 
 # override variables
 variables:
