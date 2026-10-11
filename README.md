@@ -112,7 +112,9 @@ All widget sizes use the shared layout in
 image side by side in landscape, with an approximately 80/20 split, and stacks
 them in portrait. The Framework 3.4 content limiter reduces quote typography
 for smaller view areas; exceptionally long quotes may be clamped if they still
-do not fit.
+do not fit. Character artwork keeps its aspect ratio, has descriptive alt text,
+and uses Framework's `image-dither` utility so it can be adapted to
+limited-palette displays while retaining color on color-capable devices.
 
 The local preview and Playwright tests use sample values from `.trmnlp.yml`.
 These are preview fixtures, not quote-selection logic or deployed plugin data.

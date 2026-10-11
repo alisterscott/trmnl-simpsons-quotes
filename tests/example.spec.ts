@@ -32,6 +32,9 @@ test("renders the shared quote layout in all views", async ({ page }) => {
           "src",
           "https://upload.wikimedia.org/wikipedia/en/0/02/Homer_Simpson_2006.png?utm_source=en.wikipedia.org&utm_campaign=imageinfo&utm_content=original",
         );
+        await expect(view.locator("img")).toHaveAttribute("alt", "Homer Simpson");
+        await expect(view.locator("img")).toHaveClass(/image--contain/);
+        await expect(view.locator("img")).toHaveClass(/image-dither/);
         await expect(view.locator('[data-content-limiter="true"]')).toBeVisible();
       });
     }
