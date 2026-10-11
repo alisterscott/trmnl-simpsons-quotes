@@ -73,7 +73,7 @@ test("native Liquid quote selection respects character filters", () => {
     data = context.user_data
     data['trmnl']['plugin_settings']['custom_fields_values']['character_ids'] = ARGV.fetch(0)
     template = Liquid::Template.parse(
-      File.read('src/full.liquid'),
+      File.read('src/shared.liquid') + File.read('src/full.liquid'),
       environment: TRMNL::Liquid.build_environment
     )
     puts template.render(data)

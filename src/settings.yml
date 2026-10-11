@@ -47,7 +47,7 @@ custom_fields:
   name: Plugin by Alister Scott
   field_type: author_bio
   category: art,humor
-  description: A random quote from The Simpsons.
+  description: Displays a randomly selected quote from The Simpsons with the speaking character's name and artwork. Choose one or more characters in the plugin settings to limit the quotes, or leave the selection empty for a mix from everyone. The layout adapts to full, half, and quadrant views, including portrait screens.
   github_url: https://github.com/alisterscott/trmnl-simpsons-quotes
 name: Simpsons Quotes
 description: A random quote from The Simpsons.

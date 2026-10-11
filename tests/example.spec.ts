@@ -70,12 +70,13 @@ test("renders a selected character's random quote in all views", async ({ page }
       await expect(view.locator("img")).toHaveAttribute("alt", characterName);
       await expect(view.locator("img")).toHaveClass(/image--contain/);
       await expect(view.locator("img")).toHaveClass(/image-dither/);
+      await expect(name).toHaveClass(/lg:text--xlarge/);
       await expect(quoteContainer).toBeVisible();
     });
   }
 });
 
-test("portrait quadrant truncates long quotes to fit above the character name", async ({ page }) => {
+test("long quotes truncate without hiding attribution in quadrant and half views", async ({ page }) => {
   if (!homer) {
     throw new Error("Homer Simpson is missing from the character catalog");
   }
@@ -83,14 +84,15 @@ test("portrait quadrant truncates long quotes to fit above the character name", 
   const longestQuote = homer.quotes.reduce((longest, quote) =>
     quote.length > longest.length ? quote : longest,
   );
-  const escapedQuote = longestQuote
+  const injectedQuote = `${longestQuote} ${longestQuote} ${longestQuote}`;
+  const escapedQuote = injectedQuote
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
-  await page.route("**/render/quadrant.html*", async (route) => {
+  await page.route("**/render/*.html*", async (route) => {
     const response = await route.fetch();
     const html = await response.text();
     const longQuoteHtml = html.replace(
@@ -99,38 +101,51 @@ test("portrait quadrant truncates long quotes to fit above the character name", 
     );
 
     if (html === longQuoteHtml) {
-      throw new Error("Could not inject the long quote into the quadrant preview");
+      throw new Error("Could not inject the long quote into the preview");
     }
 
     await route.fulfill({ response, body: longQuoteHtml });
   });
 
-  await page.goto(
-    "/render/quadrant.html?screen_classes=screen%20screen--1bit%20screen--ogv2%20screen--md%20screen--portrait%20screen--1x",
-    { waitUntil: "domcontentloaded" },
-  );
+  const cases = [
+    { view: "quadrant", orientation: "landscape" },
+    { view: "quadrant", orientation: "portrait" },
+    { view: "half_vertical", orientation: "landscape" },
+    { view: "half_horizontal", orientation: "landscape" },
+  ];
 
-  const view = page.locator("div.view");
-  const quote = view.locator("blockquote");
-  const quoteContainer = view.locator('[data-content-limiter="true"]');
-  const name = view.getByTestId("character-name");
+  for (const { view: viewName, orientation } of cases) {
+    await test.step(`${viewName} ${orientation}`, async () => {
+      const portraitClass = orientation === "portrait" ? "%20screen--portrait" : "";
+      await page.goto(
+        `/render/${viewName}.html?screen_classes=screen%20screen--1bit%20screen--ogv2%20screen--md${portraitClass}%20screen--1x`,
+        { waitUntil: "domcontentloaded" },
+      );
 
-  await expect(quote).toBeVisible();
-  await expect(quote).toContainText(/(?:\.\.\.|…)\s*$/);
+      const view = page.locator("div.view");
+      const quote = view.locator("blockquote");
+      const quoteContainer = view.locator('[data-content-limiter="true"]');
+      const name = view.getByTestId("character-name");
 
-  const renderedQuote = (await quote.innerText()).replace(/^“|”$/g, "");
-  expect(renderedQuote.length).toBeLessThan(longestQuote.length);
+      await expect(quote).toBeVisible();
+      await expect(quote).toContainText(/(?:\.\.\.|…)\s*$/);
+      await expect(name).toBeVisible();
 
-  const quoteBox = await quote.boundingBox();
-  const containerBox = await quoteContainer.boundingBox();
-  const nameBox = await name.boundingBox();
-  expect(quoteBox).not.toBeNull();
-  expect(containerBox).not.toBeNull();
-  expect(nameBox).not.toBeNull();
-  if (!quoteBox || !containerBox || !nameBox) {
-    throw new Error("Quote or character name has no layout box");
+      const renderedQuote = (await quote.innerText()).replace(/^“|”$/g, "");
+      expect(renderedQuote.length).toBeLessThan(injectedQuote.length);
+
+      const viewBox = await view.boundingBox();
+      const containerBox = await quoteContainer.boundingBox();
+      const nameBox = await name.boundingBox();
+      expect(viewBox).not.toBeNull();
+      expect(containerBox).not.toBeNull();
+      expect(nameBox).not.toBeNull();
+      if (!viewBox || !containerBox || !nameBox) {
+        throw new Error("Quote, character name, or view has no layout box");
+      }
+
+      expect(containerBox.y + containerBox.height).toBeLessThanOrEqual(nameBox.y);
+      expect(nameBox.y + nameBox.height).toBeLessThanOrEqual(viewBox.y + viewBox.height);
+    });
   }
-
-  expect(quoteBox.height).toBeLessThanOrEqual(containerBox.height);
-  expect(containerBox.y + containerBox.height).toBeLessThanOrEqual(nameBox.y);
 });
