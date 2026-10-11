@@ -44,6 +44,16 @@ test("renders a selected character's random quote in all views", async ({ page }
         const view = trmnlFrame.locator("div.view");
         const quote = view.locator("blockquote");
         await expect(quote).toBeVisible();
+        await expect(quote).toHaveAttribute("data-clamp-sm", "4");
+        const quoteContainer = view.locator('[data-content-limiter="true"]');
+        const quoteBox = await quoteContainer.boundingBox();
+        const nameBox = await view.getByTestId("character-name").boundingBox();
+        expect(quoteBox).not.toBeNull();
+        expect(nameBox).not.toBeNull();
+        if (!quoteBox || !nameBox) {
+          throw new Error("Quote or character name has no layout box");
+        }
+        expect(quoteBox.y + quoteBox.height).toBeLessThanOrEqual(nameBox.y);
         const quoteText = (await quote.innerText())
           .trim()
           .replace(/^“/, "")
@@ -64,7 +74,7 @@ test("renders a selected character's random quote in all views", async ({ page }
         await expect(view.locator("img")).toHaveAttribute("alt", "Homer Simpson");
         await expect(view.locator("img")).toHaveClass(/image--contain/);
         await expect(view.locator("img")).toHaveClass(/image-dither/);
-        await expect(view.locator('[data-content-limiter="true"]')).toBeVisible();
+        await expect(quoteContainer).toBeVisible();
       });
     }
   } finally {

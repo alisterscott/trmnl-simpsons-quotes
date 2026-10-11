@@ -111,11 +111,14 @@ quotes are eligible.
 All widget sizes use the shared layout in
 [`src/shared.liquid`](./src/shared.liquid). It keeps the quote and character
 image side by side in landscape, with an approximately 80/20 split, and stacks
-them in portrait. The Framework 3.4 content limiter reduces quote typography
-for smaller view areas; exceptionally long quotes may be clamped if they still
-do not fit. Character artwork keeps its aspect ratio, has descriptive alt text,
-and uses Framework's `image-dither` utility so it can be adapted to
-limited-palette displays while retaining color on color-capable devices.
+them in portrait. In portrait, the quote and author are vertically centered in
+the upper section while the larger lower section gives the character image
+more room. The Framework 3.4 content limiter reduces quote typography
+for smaller view areas, and responsive line clamps keep long quotes from
+overlapping the character name. Character artwork keeps its aspect ratio, has
+descriptive alt text, and uses Framework's `image-dither` utility so it can be
+adapted to limited-palette displays while retaining color on color-capable
+devices.
 
 The local preview and Playwright tests use `.trmnlp.yml` for their selected
 character values. Quote text and character artwork come from the shared

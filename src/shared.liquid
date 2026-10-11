@@ -3,15 +3,31 @@
 {% assign quote = '' | random_simpsons_quote: selected_character_ids %}
 <div class="layout h--full">
   <div class="flex flex--row portrait:flex--col flex--stretch h--full">
-    <section class="w--[80cqw] portrait:w--full h--full portrait:h--[80cqh] flex flex--col flex--center-y">
-      <div class="content" data-content-limiter="true">
-        <blockquote class="text--large md:text--xlarge lg:text--xxlarge">
+    <section class="w--[80cqw] portrait:w--full h--full portrait:h--[65cqh] flex flex--col flex--top portrait:flex--center">
+      <div
+        class="content h--max-[70cqh] portrait:h--max-[52cqh]"
+        style="overflow: hidden;"
+        data-content-limiter="true"
+      >
+        <blockquote
+          class="text--large md:text--xlarge lg:text--xxlarge"
+          data-clamp="3"
+          data-clamp-sm="4"
+          data-clamp-md="5"
+          data-clamp-lg="7"
+          data-clamp-portrait="5"
+          data-clamp-sm-portrait="5"
+          data-clamp-md-portrait="7"
+          data-clamp-lg-portrait="9"
+        >
           &ldquo;{{ quote.text | escape }}&rdquo;
         </blockquote>
       </div>
-      <p class="text--base md:text--large">{{ quote.character.name | escape }}</p>
+      <p class="text--base md:text--large" data-testid="character-name">
+        {{ quote.character.name | escape }}
+      </p>
     </section>
-    <div class="w--[20cqw] portrait:w--full h--full portrait:h--[20cqh] flex flex--center">
+    <div class="w--[20cqw] portrait:w--full h--full portrait:h--[35cqh] flex flex--center">
       <img
         class="image image--contain image-dither w--full h--full"
         src="{{ quote.character.imageUrl | escape }}"
