@@ -156,5 +156,26 @@
       "It tastes like...burning!",
       "Yay sleep! That’s where I’m a Viking!"
     ]
+  },
+  {
+    "id": "hans-moleman",
+    "name": "Hans Moleman",
+    "imageUrl": "https://static.simpsonswiki.com/images/e/e7/Hans_Moleman.png",
+    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Hans_Moleman.png",
+    "quotes": [
+      "My name is Hans. Drinking has ruined my life. I’m 31 years old.",
+      "Hello, this is Moleman in the Morning. Good Moleman to you. Today, part four of our series of the agonizing pain in which I live every daaaay.",
+      "I was saying Boo-urns.",
+      "No one's gay for Moleman.",
+      "The eating of an orange is a lot like a good marriage.",
+      "You call that a knife? This is a knife! (right before falling over)",
+      "I think that I shall never see, my cataracts are blinding me.",
+      "Give me the biggest seed bell you have. No, that's too big.",
+      "Oh no, my brains",
+      "Good Moleman to you. Today, part four of our series of the agonizing pain in which I live every daaaay.",
+      "If only this sugar were as sweet as you, sir.",
+      "Oh, another setback...",
+      "Cowabunga dudes"
+    ]
   }
 ]

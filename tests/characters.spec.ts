@@ -23,6 +23,7 @@ test("character catalog contains extensible records", () => {
       "marge-simpson",
       "chief-wiggum",
       "ralph-wiggum",
+      "hans-moleman",
     ]),
   );
   expect(new Set(ids).size).toBe(ids.length);
@@ -30,8 +31,12 @@ test("character catalog contains extensible records", () => {
   for (const character of characters) {
     expect(character.id).toBeTruthy();
     expect(character.name).toBeTruthy();
-    expect(character.imageUrl).toMatch(/^https:\/\/upload\.wikimedia\.org\//);
-    expect(character.imagePageUrl).toMatch(/^https:\/\/en\.wikipedia\.org\/wiki\/File:/);
+    expect(character.imageUrl).toMatch(
+      /^https:\/\/(?:upload\.wikimedia\.org|static\.simpsonswiki\.com)\//,
+    );
+    expect(character.imagePageUrl).toMatch(
+      /^https:\/\/(?:en\.wikipedia\.org\/wiki\/File:|simpsonswiki\.com\/wiki\/File:)/,
+    );
     expect(Array.isArray(character.quotes)).toBe(true);
   }
 });
@@ -64,6 +69,7 @@ test("host static data matches the editable character catalog", () => {
     characters.map(({ id, name, imageUrl, quotes }) => ({ id, name, imageUrl, quotes })),
   );
   expect(pluginData.options).toHaveProperty("Marge Simpson", "marge-simpson");
+  expect(pluginData.options).toHaveProperty("Hans Moleman", "hans-moleman");
   expect(pluginData.author_email).toBe("alister.scott@gmail.com");
 });
 
@@ -88,7 +94,9 @@ test("native Liquid quote selection respects character filters", () => {
     ['["marge-simpson"]', ["marge-simpson"]],
     ["chief-wiggum", ["chief-wiggum"]],
     ["ralph-wiggum", ["ralph-wiggum"]],
+    ["hans-moleman", ["hans-moleman"]],
     ["chief-wiggum,ralph-wiggum", ["chief-wiggum", "ralph-wiggum"]],
+    ["ralph-wiggum,hans-moleman", ["ralph-wiggum", "hans-moleman"]],
     ['["chief-wiggum", "ralph-wiggum"]', ["chief-wiggum", "ralph-wiggum"]],
     ["", characters.map((character) => character.id)],
   ] as const) {

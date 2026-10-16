@@ -112,6 +112,9 @@ During rendering, native Liquid selects a random quote from the selected
 characters' quote pool. With no selections, all characters with quotes are
 eligible. The selection is recalculated on each render.
 
+Hans Moleman is available as a character option. Wikipedia does not have a
+standalone Hans Moleman image, so his artwork currently links to Wikisimpsons.
+
 ## Quote layout
 
 All four required views use the shared template in
