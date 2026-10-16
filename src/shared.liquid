@@ -31,6 +31,11 @@
       {% endfor %}
     {% endif %}
   {% endfor %}
+  {% assign selected_quote_size = selected_quote | size | plus: 0 %}
+  {% assign large_quote_class = 'lg:text--xxlarge' %}
+  {% if selected_quote_size > 55 %}
+    {% assign large_quote_class = 'lg:text--xlarge' %}
+  {% endif %}
 <div class="layout h--full">
   <div class="flex flex--row portrait:flex--col flex--stretch h--full">
     <section class="w--[80cqw] lg:w--[75cqw] portrait:w--full h--full portrait:h--[65cqh] flex flex--col flex--top portrait:flex--center gap--distribute">
@@ -39,11 +44,11 @@
         data-content-limiter="true"
       >
         <blockquote
-          class="text--large md:text--xlarge lg:text--xxxlarge pl--1"
+          class="text--large md:text--xlarge {{ large_quote_class }} lg:portrait:text--xxxlarge pl--1"
           data-clamp="3"
           data-clamp-sm="4"
           data-clamp-md="5"
-          data-clamp-lg="7"
+          data-clamp-lg="5"
           data-clamp-portrait="4"
           data-clamp-sm-portrait="4"
           data-clamp-md-portrait="4"

@@ -45,9 +45,11 @@ test("host static data matches the editable character catalog", () => {
     abort 'quote data requires static strategy' unless settings.fetch('strategy') == 'static'
     fields = settings.fetch('custom_fields').find { |field| field.fetch('keyname') == 'character_ids' }
     options = fields.fetch('options').flat_map(&:to_a).to_h
+    author = settings.fetch('custom_fields').find { |field| field.fetch('keyname') == 'about' }
     puts JSON.generate({
       characters: JSON.parse(settings.fetch('static_data')).fetch('characters'),
-      options: options
+      options: options,
+      author_email: author.fetch('email_address')
     })
   `;
 
@@ -56,12 +58,13 @@ test("host static data matches the editable character catalog", () => {
       cwd: projectRoot,
       encoding: "utf-8",
     }),
-  ) as { characters: Character[]; options: Record<string, string> };
+  ) as { characters: Character[]; options: Record<string, string>; author_email: string };
 
   expect(pluginData.characters).toEqual(
     characters.map(({ id, name, imageUrl, quotes }) => ({ id, name, imageUrl, quotes })),
   );
   expect(pluginData.options).toHaveProperty("Marge Simpson", "marge-simpson");
+  expect(pluginData.author_email).toBe("alister.scott@gmail.com");
 });
 
 test("native Liquid quote selection respects character filters", () => {

@@ -152,3 +152,160 @@ test("long quotes truncate without hiding attribution in quadrant and half views
     });
   }
 });
+
+test("TRMNL X quote sizes prevent attribution overlap across quote lengths", async ({ page }) => {
+  const allQuotes = characters.flatMap((character) => character.quotes);
+  const reportedOverlapQuote = characters
+    .find((character) => character.id === "ralph-wiggum")
+    ?.quotes.find((quote) => quote === "I found a moonrock in my nose!");
+  if (!reportedOverlapQuote) {
+    throw new Error("The reported Ralph Wiggum overlap quote is missing from the catalog");
+  }
+  const quoteCases = [
+    { label: "reported Ralph quote", quote: reportedOverlapQuote },
+    {
+      label: "short",
+      quote: allQuotes
+        .filter((quote) => quote.length <= 30)
+        .reduce((longest, quote) => (quote.length > longest.length ? quote : longest)),
+    },
+    {
+      label: "medium",
+      quote: allQuotes
+        .filter((quote) => quote.length > 30 && quote.length <= 90)
+        .reduce((longest, quote) => (quote.length > longest.length ? quote : longest)),
+    },
+    {
+      label: "long",
+      quote: allQuotes
+        .filter((quote) => quote.length > 90 && quote.length <= 150)
+        .reduce((longest, quote) => (quote.length > longest.length ? quote : longest)),
+    },
+    {
+      label: "very long",
+      quote: allQuotes
+        .filter((quote) => quote.length > 150)
+        .reduce((longest, quote) => (quote.length > longest.length ? quote : longest)),
+    },
+  ];
+  let injectedQuote = "";
+  let selectedQuoteLength = 0;
+  let selectedQuoteClass = "";
+
+  await page.route("**/render/quadrant.html*", async (route) => {
+    const response = await route.fetch();
+    const html = await response.text();
+    const selectedQuoteMatch = html.match(
+      /<blockquote\b[^>]*class="([^"]*)"[^>]*>([\s\S]*?)<\/blockquote>/,
+    );
+    if (!selectedQuoteMatch) {
+      throw new Error("Could not find the selected quote in the TRMNL X preview");
+    }
+    const selectedQuoteSource = selectedQuoteMatch[2]
+      .replace(/^\s*&ldquo;/, "")
+      .replace(/&rdquo;\s*$/, "")
+      .trim()
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
+    selectedQuoteLength = selectedQuoteSource.length;
+    selectedQuoteClass =
+      selectedQuoteMatch[1].match(/\blg:text--(?:xlarge|xxlarge|xxxlarge)\b/)?.[0] ?? "";
+    const escapedQuote = injectedQuote
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+    const contentReplacedHtml = html.replace(
+      /(<blockquote\b[^>]*>)[\s\S]*?(<\/blockquote>)/,
+      `$1&ldquo;${escapedQuote}&rdquo;$2`,
+    );
+    const largeQuoteClass = injectedQuote.length > 55 ? "lg:text--xlarge" : "lg:text--xxlarge";
+    if (
+      !/(<blockquote\b[^>]*class="[^"]*)lg:text--(?:xlarge|xxlarge|xxxlarge)([^"]*")/.test(
+        contentReplacedHtml,
+      )
+    ) {
+      throw new Error("Could not set the TRMNL X quote size in the preview");
+    }
+    const quoteHtml = contentReplacedHtml.replace(
+      /(<blockquote\b[^>]*class="[^"]*)lg:text--(?:xlarge|xxlarge|xxxlarge)([^"]*")/,
+      `$1${largeQuoteClass}$2`,
+    );
+
+    if (html === contentReplacedHtml) {
+      throw new Error("Could not inject the TRMNL X quote into the preview");
+    }
+
+    await route.fulfill({ response, body: quoteHtml });
+  });
+
+  for (const { label, quote } of quoteCases) {
+    for (const orientation of ["landscape", "portrait"] as const) {
+      await test.step(`${label} quote in ${orientation}`, async () => {
+        injectedQuote = quote;
+        const portraitClass = orientation === "portrait" ? "%20screen--portrait" : "";
+        await page.goto(
+          `/render/quadrant.html?screen_classes=screen%20screen--v2%20screen--lg%20screen--density-2x%20screen--4bit${portraitClass}`,
+          { waitUntil: "networkidle" },
+        );
+        expect(
+          selectedQuoteClass,
+          `Unexpected class for source quote of ${selectedQuoteLength} characters`,
+        ).toBe(selectedQuoteLength > 55 ? "lg:text--xlarge" : "lg:text--xxlarge");
+
+        const view = page.locator("div.view");
+        const quoteElement = view.locator("blockquote");
+        const quoteContainer = view.locator('[data-content-limiter="true"]');
+        const name = view.getByTestId("character-name");
+        const quoteBox = await quoteElement.boundingBox();
+        const containerBox = await quoteContainer.boundingBox();
+        const nameBox = await name.boundingBox();
+        const viewBox = await view.boundingBox();
+        const quoteFontSize = await quoteElement.evaluate(
+          (element) => Number.parseFloat(getComputedStyle(element).fontSize),
+        );
+
+        await expect(quoteElement).toBeVisible();
+        await expect(name).toBeVisible();
+        expect(quoteBox).not.toBeNull();
+        expect(containerBox).not.toBeNull();
+        expect(nameBox).not.toBeNull();
+        expect(viewBox).not.toBeNull();
+        if (!quoteBox || !containerBox || !nameBox || !viewBox) {
+          throw new Error("TRMNL X quote or attribution has no layout box");
+        }
+
+        if (orientation === "landscape") {
+          expect(
+            quoteBox.y + quoteBox.height,
+            `The ${label} TRMNL X landscape quote overlaps the attribution: ${JSON.stringify({
+              quoteBox,
+              containerBox,
+              nameBox,
+              classes: await quoteElement.getAttribute("class"),
+            })}`,
+          ).toBeLessThanOrEqual(nameBox.y);
+          expect(quoteBox.y + quoteBox.height).toBeLessThanOrEqual(
+            containerBox.y + containerBox.height,
+          );
+        } else {
+          expect(containerBox.y + containerBox.height).toBeLessThanOrEqual(nameBox.y);
+        }
+        expect(nameBox.y + nameBox.height).toBeLessThanOrEqual(viewBox.y + viewBox.height);
+
+        if (orientation === "portrait") {
+          expect(quoteFontSize).toBeGreaterThan(40);
+        } else if (quote.length > 55) {
+          expect(quoteFontSize).toBeGreaterThan(20);
+          expect(quoteFontSize).toBeLessThan(38);
+        } else {
+          expect(quoteFontSize).toBeGreaterThanOrEqual(38);
+        }
+      });
+    }
+  }
+});
