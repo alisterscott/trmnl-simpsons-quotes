@@ -15,6 +15,7 @@
   "type": "commonjs",
   "main": "index.js",
   "scripts": {
+    "sync:quotes": "node scripts/sync-static-data.js",
     "test": "npx playwright test"
   },
   "devDependencies": {

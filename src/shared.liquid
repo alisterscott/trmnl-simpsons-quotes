@@ -52,7 +52,7 @@
           data-clamp-portrait="4"
           data-clamp-sm-portrait="4"
           data-clamp-md-portrait="4"
-          data-clamp-lg-portrait="5"
+          data-clamp-lg-portrait="3"
         >
           &ldquo;{{ selected_quote | escape }}&rdquo;
         </blockquote>
@@ -70,6 +70,19 @@
     </div>
   </div>
 </div>
+<style>
+  blockquote {
+    overflow-wrap: anywhere;
+  }
+
+  .screen--lg.screen--portrait .view--full blockquote,
+  .screen--lg.screen--portrait .view--half_vertical blockquote {
+    font-family: var(--font-xxlarge-font-family);
+    font-size: var(--font-xxlarge-font-size);
+    line-height: var(--font-xxlarge-line-height);
+    -webkit-font-smoothing: var(--font-xxlarge-font-smoothing);
+  }
+</style>
 {% else %}
 <div class="layout h--full">
   <div class="content">

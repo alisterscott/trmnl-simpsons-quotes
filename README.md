@@ -100,13 +100,20 @@ choose which characters may contribute quotes; leave it empty to include all
 characters. The setting uses character IDs from
 [`src/characters.json`](./src/characters.json), rather than display names.
 
-To add a character to the setting, add its record to `src/characters.json` and
-add a matching `Name: character-id` option under `custom_fields` in
-`src/settings.yml`. Also add that character's `id`, `name`, `imageUrl`, and
-`quotes` to the `static_data` JSON in the same settings file. The Playwright
-suite checks that the static data stays synchronized with the character
-catalog. The static data is required because hosted TRMNL rendering cannot
-load the local JSON file or the preview-only Ruby filters.
+To add or edit quotes, make the change in `src/characters.json`, which is the
+source of truth, then synchronize the hosted quote data with:
+
+```sh
+npm run sync:quotes
+```
+
+This updates only the `static_data` entry in `src/settings.yml`, preserving the
+rest of that file. When adding a new character, also add a matching
+`Name: character-id` option under `custom_fields` in `src/settings.yml`; the
+sync script does not change those options. Run `npm test` to verify that the
+host static data matches the character catalog. The static data is required
+because hosted TRMNL rendering cannot load the local JSON file or the
+preview-only Ruby filters.
 
 During rendering, native Liquid selects a random quote from the selected
 characters' quote pool. With no selections, all characters with quotes are
@@ -128,7 +135,10 @@ reduces quote typography for smaller view areas, and responsive line clamps
 keep long quotes from overlapping the character name. The quote and
 attribution scale up on large screens, and the attribution sits at the bottom
 of its column to balance short quotes. Portrait clamp limits leave room for
-the author. A small left inset protects the opening characters from device
+the author; on large portrait screens the quadrant view uses a three-line
+limit, while full and half-vertical views use a smaller quote size to retain
+more text within the same limit. Long unbroken words wrap within the quote
+column. A small left inset protects the opening characters from device
 font-rendering differences. Character artwork keeps its aspect ratio, has
 descriptive alt text, and uses Framework's `image-dither` utility so it can be
 adapted to limited-palette displays while retaining color on color-capable
