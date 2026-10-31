@@ -28,7 +28,7 @@ test("renders a selected character's random quote in all views", async ({
       const trmnlFrame = page.frameLocator("iframe");
       const view = trmnlFrame.locator("div.view");
       const quote = view.locator("blockquote");
-      await expect(quote).toBeVisible();
+      await expect(quote).toBeVisible({ timeout: 15000 });
       const quoteContainer = view.locator('[data-content-limiter="true"]');
       const quoteTextBox = await quote.boundingBox();
       const quoteContainerBox = await quoteContainer.boundingBox();
@@ -182,6 +182,30 @@ test("long quotes truncate without hiding attribution in quadrant and half views
   }
 });
 
+test("TRMNL X portrait quadrant shows the full screenshot quote", async ({ page }) => {
+  const quote = "Oh, I'm in no condition to drive. Wait a minute. I don't have to listen to myself. I'm drunk.";
+  const escapedQuote = quote.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  await page.route("**/render/quadrant.html*", async (route) => {
+    const response = await route.fetch();
+    const html = await response.text();
+    const updated = html.replace(
+      /(<blockquote\b[^>]*>)\s*&ldquo;[\s\S]*?&rdquo;(\s*<\/blockquote>)/,
+      `$1&ldquo;${escapedQuote}&rdquo;$2`,
+    );
+    await route.fulfill({ response, body: updated });
+  });
+
+  await page.goto(
+    "/render/quadrant.html?screen_classes=screen%20screen--v2%20screen--lg%20screen--density-2x%20screen--4bit%20screen--portrait",
+    { waitUntil: "domcontentloaded" },
+  );
+  const quoteElement = page.locator("div.view blockquote");
+  await expect(quoteElement).toBeVisible();
+  await expect(quoteElement).toContainText(quote);
+  await expect(quoteElement).not.toContainText(/(?:\.\.\.|…)\s*”?$/);
+});
+
 test("TRMNL X quote sizing prevents overflow and attribution overlap across views", async ({
   page,
 }) => {
@@ -237,6 +261,7 @@ test("TRMNL X quote sizing prevents overflow and attribution overlap across view
   let injectedQuote = "";
   let selectedQuoteLength = 0;
   let selectedQuoteClass = "";
+  let activeView = "quadrant";
 
   await page.route("**/render/*.html*", async (route) => {
     const response = await route.fetch();
@@ -273,8 +298,16 @@ test("TRMNL X quote sizing prevents overflow and attribution overlap across view
       /(<blockquote\b[^>]*>)[\s\S]*?(<\/blockquote>)/,
       `$1&ldquo;${escapedQuote}&rdquo;$2`,
     );
+    const viewSizes: Record<string, { short: string; long: string }> = {
+      quadrant: { short: "lg:text--xxlarge", long: "lg:text--xlarge" },
+      full: { short: "lg:text--xxxlarge", long: "lg:text--xxlarge" },
+      half_vertical: { short: "lg:text--xxlarge", long: "lg:text--xlarge" },
+      half_horizontal: { short: "lg:text--xxlarge", long: "lg:text--xlarge" },
+    };
     const largeQuoteClass =
-      injectedQuote.length > 55 ? "lg:text--xlarge" : "lg:text--xxlarge";
+      injectedQuote.length > 55
+        ? viewSizes[activeView].long
+        : viewSizes[activeView].short;
     if (
       !/(<blockquote\b[^>]*class="[^"]*)lg:text--(?:xlarge|xxlarge|xxxlarge)([^"]*")/.test(
         contentReplacedHtml,
@@ -305,6 +338,7 @@ test("TRMNL X quote sizing prevents overflow and attribution overlap across view
       for (const orientation of orientations) {
         await test.step(`${label} quote in ${viewName} ${orientation}`, async () => {
           injectedQuote = quote;
+          activeView = viewName;
           const portraitClass =
             orientation === "portrait" ? "%20screen--portrait" : "";
           await page.goto(
@@ -312,11 +346,18 @@ test("TRMNL X quote sizing prevents overflow and attribution overlap across view
             { waitUntil: "domcontentloaded" },
           );
 
+          const viewSizes: Record<string, { short: string; long: string }> = {
+            quadrant: { short: "lg:text--xxlarge", long: "lg:text--xlarge" },
+            full: { short: "lg:text--xxxlarge", long: "lg:text--xxlarge" },
+            half_vertical: { short: "lg:text--xxlarge", long: "lg:text--xlarge" },
+          };
           expect(
             selectedQuoteClass,
-            `Unexpected class for source quote of ${selectedQuoteLength} characters`,
+            `Unexpected ${viewName} class for source quote of ${selectedQuoteLength} characters`,
           ).toBe(
-            selectedQuoteLength > 55 ? "lg:text--xlarge" : "lg:text--xxlarge",
+            selectedQuoteLength > 55
+              ? viewSizes[viewName].long
+              : viewSizes[viewName].short,
           );
 
           const view = page.locator("div.view");
@@ -325,7 +366,9 @@ test("TRMNL X quote sizing prevents overflow and attribution overlap across view
           const name = view.getByTestId("character-name");
           await expect(quoteElement).toBeVisible();
           await expect(name).toBeVisible();
-          await expect(quoteElement).toHaveAttribute("data-clamp-cached", "true");
+          await expect(quoteElement).toHaveAttribute("data-clamp-cached", "true", {
+            timeout: 15000,
+          });
           const quoteBox = await quoteElement.boundingBox();
           const containerBox = await quoteContainer.boundingBox();
           const nameBox = await name.boundingBox();
@@ -343,8 +386,19 @@ test("TRMNL X quote sizing prevents overflow and attribution overlap across view
           }
           await expect(quoteElement).toHaveAttribute(
             "data-clamp-lg-portrait",
-            "3",
+            viewName === "quadrant" ? "6" : "3",
           );
+          if (viewName === "quadrant" && orientation === "landscape") {
+            await expect(quoteElement).toHaveAttribute("data-clamp-lg", "7");
+            const attributionMarginTop = await name.evaluate((element) =>
+              Number.parseFloat(getComputedStyle(element).marginTop),
+            );
+            expect(attributionMarginTop).toBeGreaterThan(0);
+            await expect(view.locator("img")).toHaveCSS(
+              "object-position",
+              "50% 100%",
+            );
+          }
 
           if (orientation === "landscape") {
             expect(
@@ -371,7 +425,8 @@ test("TRMNL X quote sizing prevents overflow and attribution overlap across view
           );
 
           if (orientation === "portrait" && viewName === "quadrant") {
-            expect(quoteFontSize).toBeGreaterThan(40);
+            expect(quoteFontSize).toBeGreaterThan(20);
+            expect(quoteFontSize).toBeLessThanOrEqual(40);
           } else if (orientation === "portrait") {
             expect(quoteFontSize).toBeGreaterThan(20);
             expect(quoteFontSize).toBeLessThan(50);

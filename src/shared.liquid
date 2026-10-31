@@ -1,3 +1,4 @@
+{% template simpsons_quote %}
 {% assign selected_character_ids_value = trmnl.plugin_settings.custom_fields_values.character_ids %}
 {% assign selected_character_ids_value = selected_character_ids_value
   | join: ','
@@ -32,61 +33,44 @@
     {% endif %}
   {% endfor %}
   {% assign selected_quote_size = selected_quote | size | plus: 0 %}
-  {% assign large_quote_class = 'lg:text--xxlarge' %}
+  {% assign quote_size = sm_size %}
+  {% assign large_quote_size = lg_size %}
   {% if selected_quote_size > 55 %}
-    {% assign large_quote_class = 'lg:text--xlarge' %}
+    {% assign quote_size = sm_long_size %}
+    {% assign large_quote_size = lg_long_size %}
   {% endif %}
-<div class="layout h--full">
+<div class="layout h--full layout--{{ view_name }}">
   <div class="flex flex--row portrait:flex--col flex--stretch h--full">
     <section class="w--[80cqw] lg:w--[75cqw] portrait:w--full h--full portrait:h--[65cqh] flex flex--col flex--top portrait:flex--center gap--distribute">
-      <div
-        class="content h--max-[70cqh] portrait:h--max-[52cqh]"
-        data-content-limiter="true"
-      >
+      <div class="content h--max-[70cqh] portrait:h--max-[52cqh]" data-content-limiter="true">
         <blockquote
-          class="text--large md:text--xlarge {{ large_quote_class }} lg:portrait:text--xxxlarge pl--1"
+          class="{{ quote_size }} {{ large_quote_size }} pl--1"
           data-clamp="3"
           data-clamp-sm="4"
           data-clamp-md="5"
-          data-clamp-lg="5"
+          data-clamp-lg="{{ lg_clamp }}"
           data-clamp-portrait="4"
           data-clamp-sm-portrait="4"
           data-clamp-md-portrait="4"
-          data-clamp-lg-portrait="3"
-        >
-          &ldquo;{{ selected_quote | escape }}&rdquo;
-        </blockquote>
+          data-clamp-lg-portrait="{{ lg_portrait_clamp }}"
+        >&ldquo;{{ selected_quote | escape }}&rdquo;</blockquote>
       </div>
       <p class="text--base md:text--large lg:text--xxlarge" data-testid="character-name">
         {{ selected_character.name | escape }}
       </p>
     </section>
-    <div class="w--[20cqw] lg:w--[25cqw] portrait:w--full h--full portrait:h--[35cqh] flex flex--center">
-      <img
-        class="image image--contain image-dither w--full h--full"
-        src="{{ selected_character.imageUrl | escape }}"
-        alt="{{ selected_character.name | escape }}"
-      >
+    <div class="character-art w--[20cqw] lg:w--[25cqw] portrait:w--full h--full portrait:h--[35cqh] flex flex--center">
+      <img class="image image--contain image-dither w--full h--full" src="{{ selected_character.imageUrl | escape }}" alt="{{ selected_character.name | escape }}">
     </div>
   </div>
 </div>
 <style>
-  blockquote {
-    overflow-wrap: anywhere;
-  }
-
-  .screen--lg.screen--portrait .view--full blockquote,
-  .screen--lg.screen--portrait .view--half_vertical blockquote {
-    font-family: var(--font-xxlarge-font-family);
-    font-size: var(--font-xxlarge-font-size);
-    line-height: var(--font-xxlarge-line-height);
-    -webkit-font-smoothing: var(--font-xxlarge-font-smoothing);
-  }
+  blockquote { overflow-wrap: anywhere; }
+  .screen--lg:not(.screen--portrait) .layout--quadrant [data-content-limiter="true"] { max-height: 82cqh; }
+  .screen--lg:not(.screen--portrait) .layout--quadrant [data-testid="character-name"] { margin-top: auto; }
+  .screen--lg:not(.screen--portrait) .layout--quadrant .character-art img { object-position: center bottom; }
 </style>
 {% else %}
-<div class="layout h--full">
-  <div class="content">
-    <p class="text--base">No quotes found for the selected characters.</p>
-  </div>
-</div>
+<div class="layout h--full"><div class="content"><p class="text--base">No quotes found for the selected characters.</p></div></div>
 {% endif %}
+{% endtemplate %}
