@@ -19,6 +19,7 @@ test("character catalog contains extensible records", () => {
 
   expect(ids).toEqual(
     expect.arrayContaining([
+      "bart-simpson",
       "homer-simpson",
       "marge-simpson",
       "chief-wiggum",
@@ -69,6 +70,7 @@ test("host static data matches the editable character catalog", () => {
     characters.map(({ id, name, imageUrl, quotes }) => ({ id, name, imageUrl, quotes })),
   );
   expect(pluginData.options).toHaveProperty("Marge Simpson", "marge-simpson");
+  expect(pluginData.options).toHaveProperty("Bart Simpson", "bart-simpson");
   expect(pluginData.options).toHaveProperty("Hans Moleman", "hans-moleman");
   expect(pluginData.author_email).toBe("alister.scott@gmail.com");
 });
@@ -89,6 +91,7 @@ test("native Liquid quote selection respects character filters", () => {
   `;
 
   for (const [selectedIds, allowedIds] of [
+    ["bart-simpson", ["bart-simpson"]],
     ["homer-simpson", ["homer-simpson"]],
     ["marge-simpson", ["marge-simpson"]],
     ['["marge-simpson"]', ["marge-simpson"]],
