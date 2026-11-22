@@ -1,19 +1,18 @@
 {
-  "name": "trmnl-template",
+  "name": "trmnl-simpsons-quotes",
   "version": "1.0.0",
-  "description": "A template project for a TRMNL plugin inc. Playwright Tests",
-  "homepage": "https://github.com/alisterscott/trmnl-template#readme",
+  "description": "A TRMNL plugin that displays random Simpsons quotes",
+  "homepage": "https://github.com/alisterscott/trmnl-simpsons-quotes#readme",
   "bugs": {
-    "url": "https://github.com/alisterscott/trmnl-template/issues"
+    "url": "https://github.com/alisterscott/trmnl-simpsons-quotes/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/alisterscott/trmnl-template.git"
+    "url": "git+https://github.com/alisterscott/trmnl-simpsons-quotes.git"
   },
   "license": "MIT",
   "author": "",
   "type": "commonjs",
-  "main": "index.js",
   "scripts": {
     "sync:quotes": "node scripts/sync-static-data.js",
     "test": "npx playwright test"

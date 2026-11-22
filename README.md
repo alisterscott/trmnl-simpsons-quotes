@@ -169,3 +169,8 @@ npm test -- --grep "character catalog"
 ```
 
 The HTML report is generated in `playwright-report/`.
+
+Tests live in `tests/`: `characters.spec.ts` checks the catalog, the synced
+static data and quote filtering, and `quote-layout.spec.ts` checks the rendered
+layout in each view. Shared helpers (catalog loading, preview URLs, quote
+injection) are in `tests/support/`.

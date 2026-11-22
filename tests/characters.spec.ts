@@ -1,18 +1,9 @@
 import { test, expect } from "@playwright/test";
 import { execFileSync } from "child_process";
-import fs from "fs";
 import path from "path";
+import { characters, type Character } from "./support/catalog";
 
-type Character = {
-  id: string;
-  name: string;
-  imageUrl: string;
-  imagePageUrl: string;
-  quotes: string[];
-};
-
-const catalogPath = path.join(__dirname, "..", "src", "characters.json");
-const characters = JSON.parse(fs.readFileSync(catalogPath, "utf-8")) as Character[];
+const projectRoot = path.join(__dirname, "..");
 
 test("character catalog contains extensible records", () => {
   const ids = characters.map((character) => character.id);
@@ -43,7 +34,6 @@ test("character catalog contains extensible records", () => {
 });
 
 test("host static data matches the editable character catalog", () => {
-  const projectRoot = path.join(__dirname, "..");
   const staticDataScript = `
     require 'yaml'
     require 'json'
@@ -76,7 +66,6 @@ test("host static data matches the editable character catalog", () => {
 });
 
 test("native Liquid quote selection respects character filters", () => {
-  const projectRoot = path.join(__dirname, "..");
   const renderScript = `
     require 'trmnlp'
     require 'json'
