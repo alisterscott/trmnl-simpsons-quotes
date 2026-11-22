@@ -56,16 +56,20 @@ export function escapeHtml(text: string): string {
     .replace(/'/g, "&#39;");
 }
 
-/** Replaces the text inside the first <blockquote>, throwing if there is none. */
+/**
+ * Replaces the text inside the first <blockquote>, throwing if there is none.
+ * The result may equal the input when the preview happened to pick the same
+ * quote, so check for the element rather than for a change.
+ */
 export function replaceQuote(html: string, quote: string): string {
-  const replaced = html.replace(
-    BLOCKQUOTE_CONTENT,
-    `$1&ldquo;${escapeHtml(quote)}&rdquo;$2`,
-  );
-  if (replaced === html) {
-    throw new Error("Could not inject the quote into the preview");
+  if (!BLOCKQUOTE_CONTENT.test(html)) {
+    throw new Error("Could not find a quote to replace in the preview");
   }
-  return replaced;
+  return html.replace(
+    BLOCKQUOTE_CONTENT,
+    (_match, open: string, close: string) =>
+      `${open}&ldquo;${escapeHtml(quote)}&rdquo;${close}`,
+  );
 }
 
 /** Intercepts rendered view HTML so a test can control the displayed quote. */
