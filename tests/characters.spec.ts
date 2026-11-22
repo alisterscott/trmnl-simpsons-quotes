@@ -54,10 +54,16 @@ test("host static data matches the editable character catalog", () => {
     fields = settings.fetch('custom_fields').find { |field| field.fetch('keyname') == 'character_ids' }
     options = fields.fetch('options').flat_map(&:to_a).to_h
     author = settings.fetch('custom_fields').find { |field| field.fetch('keyname') == 'about' }
+    randomise = settings.fetch('custom_fields').find { |field| field.fetch('keyname') == 'randomise_characters' }
     puts JSON.generate({
       characters: JSON.parse(settings.fetch('static_data')).fetch('characters'),
       options: options,
-      author_email: author.fetch('email_address')
+      author_email: author.fetch('email_address'),
+      randomise: {
+        default: randomise.fetch('default'),
+        field_type: randomise.fetch('field_type'),
+        options: randomise.fetch('options').flat_map(&:to_a).to_h
+      }
     })
   `;
 
@@ -66,7 +72,12 @@ test("host static data matches the editable character catalog", () => {
       cwd: projectRoot,
       encoding: "utf-8",
     }),
-  ) as { characters: Character[]; options: Record<string, string>; author_email: string };
+  ) as {
+    characters: Character[];
+    options: Record<string, string>;
+    author_email: string;
+    randomise: { default: string; field_type: string; options: Record<string, string> };
+  };
 
   expect(pluginData.characters).toEqual(
     characters.map(({ id, name, imageUrl, quotes }) => ({ id, name, imageUrl, quotes })),
@@ -87,6 +98,13 @@ test("host static data matches the editable character catalog", () => {
   expect(pluginData.options).toHaveProperty("Grampa Simpson", "grampa-simpson");
   expect(pluginData.options).toHaveProperty("Professor Frink", "professor-frink");
   expect(pluginData.options).toHaveProperty("Troy McClure", "troy-mcclure");
+  // TRMNL has no checkbox field, so "Randomise characters" is a Yes/No select
+  // that defaults to Yes
+  expect(pluginData.randomise).toEqual({
+    default: "yes",
+    field_type: "select",
+    options: { Yes: "yes", No: "no" },
+  });
   expect(pluginData.author_email).toBe("alister.scott@gmail.com");
 });
 
@@ -140,4 +158,67 @@ test("native Liquid quote selection respects character filters", () => {
     expect(allowedIds).toContain(selectedCharacter.id);
     expect(rendered).toContain(selectedCharacter.imageUrl);
   }
+});
+
+test("randomise characters picks characters evenly unless it is turned off", () => {
+  const renderScript = `
+    require 'trmnlp'
+    require 'json'
+    context = TRMNLP::Context.new(Dir.pwd)
+    base = context.user_data
+    template = Liquid::Template.parse(
+      File.read('src/shared.liquid') + File.read('src/full.liquid'),
+      environment: TRMNL::Liquid.build_environment
+    )
+    names = JSON.parse(File.read('src/characters.json')).map { |c| c['name'] }
+
+    # Renders at the plugin's real 900 second refresh interval. Plain
+    # "seconds mod N" would pick the same character every time.
+    tally = lambda do |ids, randomise, count|
+      counts = Hash.new(0)
+      count.times do |i|
+        Time.define_singleton_method(:now) { Time.at(1_763_800_000 + i * 900) }
+        data = Marshal.load(Marshal.dump(base))
+        values = data['trmnl']['plugin_settings']['custom_fields_values']
+        values['character_ids'] = ids
+        values['randomise_characters'] = randomise unless randomise.nil?
+        out = template.render(data)
+        counts[names.find { |name| out.include?(%(alt="#{name}")) }] += 1
+      end
+      counts.transform_values { |n| (100.0 * n / count).round(1) }
+    end
+
+    two = 'homer-simpson,cletus-spuckler'
+    puts JSON.generate({
+      all_default: tally.call('', nil, 900),
+      all_yes: tally.call('', 'yes', 300),
+      two_default: tally.call(two, nil, 600),
+      two_no: tally.call(two, 'no', 600),
+      all_no: tally.call('', 'no', 900)
+    })
+  `;
+  const shares = JSON.parse(
+    execFileSync("bundle", ["exec", "ruby", "-e", renderScript], {
+      cwd: projectRoot,
+      encoding: "utf-8",
+    }),
+  ) as Record<string, Record<string, number>>;
+
+  // Default (setting not set) and "yes": every character is equally likely
+  const even = 100 / characters.length;
+  for (const key of ["all_default", "all_yes"]) {
+    expect(Object.keys(shares[key]).sort()).toEqual(
+      characters.map((c) => c.name).sort(),
+    );
+    for (const share of Object.values(shares[key])) {
+      expect(share).toBeGreaterThan(even * 0.5);
+      expect(share).toBeLessThan(even * 1.6);
+    }
+  }
+  // Homer has 51 quotes and Cletus 6, but they come up about equally often
+  expect(shares.two_default["Homer Simpson"]).toBeGreaterThan(40);
+  expect(shares.two_default["Homer Simpson"]).toBeLessThan(60);
+  // "no" picks any quote at random, so the character with more quotes wins
+  expect(shares.two_no["Homer Simpson"]).toBeGreaterThan(80);
+  expect(shares.all_no["Homer Simpson"]).toBeGreaterThan(15);
 });

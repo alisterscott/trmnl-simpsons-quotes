@@ -116,8 +116,19 @@ because hosted TRMNL rendering cannot load the local JSON file or the
 preview-only Ruby filters.
 
 During rendering, native Liquid selects a random quote from the selected
-characters' quote pool. With no selections, all characters with quotes are
-eligible. The selection is recalculated on each render.
+characters. With no selections, all characters with quotes are eligible. The
+selection is recalculated on each render.
+
+The **Randomise characters** setting (Yes by default) controls how the quote is
+chosen. **Yes** picks a random character first and then one of their quotes, so
+every character is equally likely however many quotes they have. **No** picks
+any quote at random, so characters with more quotes appear more often. TRMNL has
+no checkbox field, so this is a Yes/No select; the local preview does not apply
+field defaults, so only an explicit "No" turns it off. To preview it locally,
+add `randomise_characters: "no"` to `custom_fields` in `.trmnlp.yml`.
+
+The pick is seeded from the render time, scrambled so that the plugin's 15
+minute refresh interval cannot land on the same character every time.
 
 Artwork for most characters is hosted by Wikipedia or Wikisimpsons (see each
 character's `imagePageUrl` for the source and licence page).

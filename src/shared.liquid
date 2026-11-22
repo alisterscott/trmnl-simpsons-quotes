@@ -3,7 +3,8 @@
   Shared layout for every view. Each view file renders this template with:
 
     characters      the static_data characters (id, name, imageUrl, quotes)
-    trmnl           the TRMNL context (for the selected character_ids setting)
+    trmnl           the TRMNL context (for the character_ids and
+                    randomise_characters settings)
     view_name       adds a `layout--<view_name>` class for per-view CSS
     clamp_sm, clamp_md, clamp_lg
     clamp_sm_portrait, clamp_md_portrait, clamp_lg_portrait
@@ -37,32 +38,83 @@
   {% assign include_all = true %}
 {% endif %}
 
-{% comment %} Count the quotes that can be chosen. {% endcomment %}
+{% comment %}
+  "Randomise characters" setting (randomise_characters, a Yes/No select that
+  defaults to Yes). Yes picks a random character first and then one of their
+  quotes, so every character is equally likely however many quotes they have.
+  No picks any quote at random, so characters with more quotes appear more
+  often. TRMNL has no checkbox field and the local preview does not apply
+  defaults, so only an explicit "no" turns it off.
+{% endcomment %}
+{% assign randomise_setting = trmnl.plugin_settings.custom_fields_values.randomise_characters | downcase %}
+{% assign randomise_characters = true %}
+{% if randomise_setting == 'no' or randomise_setting == 'false' %}
+  {% assign randomise_characters = false %}
+{% endif %}
+
+{% comment %} Count the characters and quotes that can be chosen. {% endcomment %}
+{% assign eligible_character_count = 0 %}
 {% assign eligible_quote_count = 0 %}
 {% for character in characters %}
   {% if include_all or selected_ids contains character.id %}
-    {% assign eligible_quote_count = eligible_quote_count | plus: character.quotes.size %}
+    {% if character.quotes.size > 0 %}
+      {% assign eligible_character_count = eligible_character_count | plus: 1 %}
+      {% assign eligible_quote_count = eligible_quote_count | plus: character.quotes.size %}
+    {% endif %}
   {% endif %}
 {% endfor %}
 
 {% if eligible_quote_count > 0 %}
-  {% comment %}
-    Pick the Nth eligible quote, where N changes every second. Walk the
-    eligible characters, skipping each one's quotes until N lands inside one.
-  {% endcomment %}
-  {% assign quote_index = 'now' | date: '%s' | modulo: eligible_quote_count %}
   {% assign selected_quote = '' %}
   {% assign selected_character = '' %}
-  {% for character in characters %}
-    {% if include_all or selected_ids contains character.id %}
-      {% if quote_index < character.quotes.size %}
-        {% assign selected_quote = character.quotes[quote_index] %}
-        {% assign selected_character = character %}
-        {% break %}
+  {% if randomise_characters %}
+    {% comment %}
+      Time seeds both picks. Plain "seconds mod N" would get stuck on one
+      character: the plugin refreshes every 900 seconds, and 900 is divisible
+      by many character counts. So microseconds are mixed in and the seed is
+      scrambled (multiplicative hashing, keeping the high 16 bits). Then walk
+      the eligible characters, skipping until the picked one is reached.
+    {% endcomment %}
+    {% assign now_seconds = 'now' | date: '%s' | plus: 0 %}
+    {% assign now_micros = 'now' | date: '%6N' | plus: 0 %}
+    {% assign seed = now_seconds | times: 1000000 | plus: now_micros %}
+    {% assign characters_to_skip = seed
+      | times: 2654435761
+      | modulo: 4294967296
+      | divided_by: 65536
+      | modulo: eligible_character_count
+    %}
+    {% assign quote_seed = seed | times: 2246822519 | modulo: 4294967296 | divided_by: 65536 %}
+    {% for character in characters %}
+      {% if include_all or selected_ids contains character.id %}
+        {% if character.quotes.size > 0 %}
+          {% if characters_to_skip == 0 %}
+            {% assign quote_index = quote_seed | modulo: character.quotes.size %}
+            {% assign selected_quote = character.quotes[quote_index] %}
+            {% assign selected_character = character %}
+            {% break %}
+          {% endif %}
+          {% assign characters_to_skip = characters_to_skip | minus: 1 %}
+        {% endif %}
       {% endif %}
-      {% assign quote_index = quote_index | minus: character.quotes.size %}
-    {% endif %}
-  {% endfor %}
+    {% endfor %}
+  {% else %}
+    {% comment %}
+      Pick the Nth eligible quote, where N changes every second. Walk the
+      eligible characters, skipping each one's quotes until N lands inside one.
+    {% endcomment %}
+    {% assign quote_index = 'now' | date: '%s' | modulo: eligible_quote_count %}
+    {% for character in characters %}
+      {% if include_all or selected_ids contains character.id %}
+        {% if quote_index < character.quotes.size %}
+          {% assign selected_quote = character.quotes[quote_index] %}
+          {% assign selected_character = character %}
+          {% break %}
+        {% endif %}
+        {% assign quote_index = quote_index | minus: character.quotes.size %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
 
   {% if selected_quote.size > long_quote_length %}
     {% assign quote_size = sm_long_size %}

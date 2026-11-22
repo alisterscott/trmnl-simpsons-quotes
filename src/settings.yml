@@ -57,6 +57,14 @@ custom_fields:
   - Grampa Simpson: grampa-simpson
   - Professor Frink: professor-frink
   - Troy McClure: troy-mcclure
+- keyname: randomise_characters
+  name: Randomise characters
+  description: Yes picks a random character first and then one of their quotes, so every character appears equally often. No picks any quote at random, so characters with more quotes appear more often.
+  field_type: select
+  default: 'yes'
+  options:
+  - 'Yes': 'yes'
+  - 'No': 'no'
 - keyname: about
   name: Plugin by Alister Scott
   field_type: author_bio
