@@ -74,7 +74,7 @@
 
   <div class="layout h--full layout--{{ view_name }}">
     <div class="flex flex--row portrait:flex--col h--full">
-      <section class="w--[80cqw] lg:w--[75cqw] portrait:w--full h--full portrait:h--[65cqh] flex flex--col flex--top portrait:flex--center gap--distribute">
+      <section class="w--[80cqw] lg:w--[75cqw] portrait:w--full h--full portrait:h--[65cqh] flex flex--col flex--left">
         <div class="content h--max-[70cqh] portrait:h--max-[52cqh]" data-content-limiter="true">
           <blockquote
             class="{{ quote_size }} {{ quote_size_lg }} pl--1"
@@ -88,7 +88,7 @@
             data-clamp-lg-portrait="{{ clamp_lg_portrait }}"
           >&ldquo;{{ selected_quote | escape }}&rdquo;</blockquote>
         </div>
-        <p class="text--base md:text--large lg:text--xxlarge" data-testid="character-name">
+        <p class="text--base md:text--large lg:text--xlarge pl--1" data-testid="character-name">
           {{ selected_character.name | escape }}
         </p>
       </section>

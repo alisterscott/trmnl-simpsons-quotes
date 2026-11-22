@@ -79,7 +79,7 @@ test("renders a selected character's random quote in all views", async ({
       await expect(image).toHaveClass(/image--contain/);
       await expect(image).toHaveClass(/image-dither/);
       await expect(image).toHaveCSS("object-fit", "contain");
-      await expect(name).toHaveClass(/lg:text--xxlarge/);
+      await expect(name).toHaveClass(/lg:text--xlarge/);
       await expect(quoteContainer).toBeVisible();
     });
   }

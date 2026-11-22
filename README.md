@@ -128,13 +128,15 @@ All four required views use the shared template in
 [`src/shared.liquid`](./src/shared.liquid); the view-specific Liquid files
 remain as minimal placeholders. The shared layout keeps the quote and
 character image side by side in landscape, with an approximately 80/20 split
-(75/25 on larger screens), and stacks them in portrait. In portrait, the quote
-and author are vertically centered in the upper section while the larger lower
-section gives the character image more room. Framework 3.4's content limiter
+(75/25 on larger screens), and stacks them in portrait (65/35 of the height).
+The quote and author are left-aligned with each other and vertically centered
+in their section, so short quotes sit beside the character instead of at the
+top. Framework 3.4's content limiter
 reduces quote typography for smaller view areas, and responsive line clamps
-keep long quotes from overlapping the character name. The quote and
-attribution scale up on large screens, and the attribution sits at the bottom
-of its column to balance short quotes. Line limits are set per view and
+keep long quotes from overlapping the character name. The quote scales
+up on large screens; the attribution is always set smaller than the quote so it
+never outweighs it, and on large landscape screens the quadrant view pins it to
+the bottom of its column. Line limits are set per view and
 screen size by the `clamp_*` parameters in each view file. They are sized to
 how many lines fit above the author, so a quote is only cut off with an
 ellipsis when it would not fit; long quotes use a smaller text size to retain
