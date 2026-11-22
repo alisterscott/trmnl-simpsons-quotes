@@ -13,16 +13,12 @@
       "Sure, it's not like I'm learning anything at school today.",
       "I didn’t think it was physically possible, but this both sucks and blows",
       "Hello I'm Dr Cheeks, I'm doing my rounds and I'm a little behind",
-      "And I find it ironic that for once dad's butt prevented the release of toxic gas.",
       "Mom, Dad, just so you don’t hear any wild rumors, I’m being indicted for fraud in Australia",
       "Kippers for breakfast Aunt Helga? Is it Saint Swithin's day already?",
       "Heard you swearing Dad, mind if I join? Crap boobs crap!",
       "So I says to Mabel, I says...",
       "Look at me, I'm a grad student! I'm 30 years old and I made $600 last year!",
-      "There's your answer fishbulb.",
-      "I wash myself with a rag on a stick, uhurr hurr",
-      "You mean its not me noggin its me peepers?",
-      "It's a beautiful day, Millhouse. The sun is shining, birds are singing... Bees are trying to have sex with them. As is my understanding.",
+      "It's a beautiful day, Milhouse. The sun is shining, birds are singing... Bees are trying to have sex with them. As is my understanding.",
       "Do you think I'm telling people not to have a cow because deep down I want them to have a cow?",
       "I’ve based my whole life on Krusty’s teachings!"
     ]
@@ -37,7 +33,6 @@
       "Stop in the name of a Private Citizen with no connection to the Law!",
       "I've got to get back to my round! If these kids ever make the link between eating right and feeling good, I am screwed!",
       "If he's so smart, how come he's dead?",
-      "Ha! He's afraid of dying!",
       "Let me give you this fatherly advice: go emotionally dead. Leave your body. Make lots of friends, bye!",
       "I took some pills I found on the floor and now I'm afraid if I stop talking I'll die.",
       "Oh, Lord, please help us kill these foreigners who think your Mother should be revered...",
@@ -71,7 +66,6 @@
       "Marge, I'm going to miss you so much. And it's not just the sex. It's also the food preparation.",
       "Marge, it takes two to lie. One to lie and one to listen.",
       "Marge, it's not easy to juggle a pregnant wife and a troubled child, but somehow I managed to fit in eight hours of TV a day.",
-      "Oh, I'm in no condition to drive. Wait a minute. I don't have to listen to myself. I'm drunk.",
       "Oh, Marge, you're as beautiful as Princess Leia and as smart as Yoda.",
       "Oh, kids are great! You can teach them to hate what you hate!",
       "Only a true father would lead his son to believe he belonged to someone else.",
@@ -118,14 +112,12 @@
       "I'm uh... on a road, uh... looks to be asphalt. Um, ah geez, trees, shrubs, um... I'm directly under the earth's sun... now!",
       "She didn’t reckon with the awesome power of the Chief of Police. Now where did I put my badge? Hey, that duck’s got it.",
       "I'd rather let a thousand guilty men go free than chase after them.",
-      "Book em Lou. One count of being a bear. And one count of being an accessory to being a bear.",
       "You’ve got the wrong number, this is 9-1-2",
       "My wife's looking for something that doesn't make her look like a horse, so, I'm gonna be here for a while",
       "Book 'em, Lou! One Count of Being a Bear, and one Count of Being an Accessory to Being a Bear.",
-      "Esquilax!",
       "Take a last look at the unconditional love in your kid's eyes 'cos when he comes out it'll be gone!",
       "Why are the pretty ones always insane?",
-      "mind if I tag along... I'm a bit of a crime buff",
+      "Mind if I tag along... I'm a bit of a crime buff.",
       "Let him go, Lou. Someone going that fast has no time for a ticket."
     ]
   },
@@ -135,12 +127,11 @@
     "imageUrl": "https://upload.wikimedia.org/wikipedia/en/1/14/Ralph_Wiggum.png",
     "imagePageUrl": "https://en.wikipedia.org/wiki/File:Ralph_Wiggum.png",
     "quotes": [
-      "That’s where I see the leprechaun. He told me to burn things.",
       "Me fail English? That's unpossible!",
       "I'm a brick!",
       "Principal Skinner is an old man that lives at the school. Lisa?",
       "My cat's breath smells like cat food",
-      "and when the doctor said i didnt have worms anymore that was the happiest day of my life",
+      "And when the doctor said I didn't have worms anymore, that was the happiest day of my life.",
       "Hi, Super Nintendo Chalmers!",
       "Mrs. Krabappel and Principal Skinner were in the closet making babies and I saw one of the babies and then the baby looked at me.",
       "Eww, Daddy, this tastes like Gramma!",
@@ -148,9 +139,9 @@
       "The doctor said I wouldn't have so many nose bleeds if I kept my finger outta there",
       "I heard your dad went into a restaurant and ate everything in the restaurant and they had to close the restaurant",
       "I found a moonrock in my nose!",
-      "That's where I saw the Leprchaun. He tells me to burn things!",
-      "the pointy kitty took the key!",
-      "That's my sand box, Im not allowed in the deep end.",
+      "That's where I saw the leprechaun. He tells me to burn things!",
+      "The pointy kitty took the key!",
+      "That's my sand box, I'm not allowed in the deep end.",
       "I choo-choo-choose you!",
       "I dress myself.",
       "I like you, you like me, we're a happy family.",
@@ -172,14 +163,25 @@
       "I was saying Boo-urns.",
       "No one's gay for Moleman.",
       "The eating of an orange is a lot like a good marriage.",
-      "You call that a knife? This is a knife! (right before falling over)",
+      "You call that a knife? This is a knife!",
       "I think that I shall never see, my cataracts are blinding me.",
       "Give me the biggest seed bell you have. No, that's too big.",
-      "Oh no, my brains",
-      "Good Moleman to you. Today, part four of our series of the agonizing pain in which I live every daaaay.",
       "If only this sugar were as sweet as you, sir.",
-      "Oh, another setback...",
-      "Cowabunga dudes"
+      "Oh, another setback..."
+    ]
+  },
+  {
+    "id": "cletus-spuckler",
+    "name": "Cletus Spuckler",
+    "imageUrl": "https://static.simpsonswiki.com/images/5/58/Cletus_Spuckler.png",
+    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Cletus_Spuckler.png",
+    "quotes": [
+      "We home-school 'em. I teach the big ones and the big ones teach the little ones. But no one ever taught me, which makes the whole thing just an exercise in futility.",
+      "Now I don't sign nothin' without pretendin' to read it first. Hamburger, hamburger, hamburger, hamburger... looks good.",
+      "Of all the cousins I could have married, you were my sister.",
+      "I have sired a dumb-dumb, a mush-head, a whatsit, a dogboy, and something with a human face and fish body what we called Kevin. But my young'uns is not dirty players!",
+      "Oh my gosh, it's an outhouse sent from the future.",
+      "Be quiet robo-potty!"
     ]
   }
 ]

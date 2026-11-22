@@ -16,6 +16,7 @@ test("character catalog contains extensible records", () => {
       "chief-wiggum",
       "ralph-wiggum",
       "hans-moleman",
+      "cletus-spuckler",
     ]),
   );
   expect(new Set(ids).size).toBe(ids.length);
@@ -62,6 +63,7 @@ test("host static data matches the editable character catalog", () => {
   expect(pluginData.options).toHaveProperty("Marge Simpson", "marge-simpson");
   expect(pluginData.options).toHaveProperty("Bart Simpson", "bart-simpson");
   expect(pluginData.options).toHaveProperty("Hans Moleman", "hans-moleman");
+  expect(pluginData.options).toHaveProperty("Cletus Spuckler", "cletus-spuckler");
   expect(pluginData.author_email).toBe("alister.scott@gmail.com");
 });
 
@@ -87,6 +89,7 @@ test("native Liquid quote selection respects character filters", () => {
     ["chief-wiggum", ["chief-wiggum"]],
     ["ralph-wiggum", ["ralph-wiggum"]],
     ["hans-moleman", ["hans-moleman"]],
+    ["cletus-spuckler", ["cletus-spuckler"]],
     ["chief-wiggum,ralph-wiggum", ["chief-wiggum", "ralph-wiggum"]],
     ["ralph-wiggum,hans-moleman", ["ralph-wiggum", "hans-moleman"]],
     ['["chief-wiggum", "ralph-wiggum"]', ["chief-wiggum", "ralph-wiggum"]],
