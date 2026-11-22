@@ -134,10 +134,11 @@ section gives the character image more room. Framework 3.4's content limiter
 reduces quote typography for smaller view areas, and responsive line clamps
 keep long quotes from overlapping the character name. The quote and
 attribution scale up on large screens, and the attribution sits at the bottom
-of its column to balance short quotes. Portrait clamp limits leave room for
-the author; on large portrait screens the quadrant view uses a three-line
-limit, while full and half-vertical views use a smaller quote size to retain
-more text within the same limit. Long unbroken words wrap within the quote
+of its column to balance short quotes. Line limits are set per view and
+screen size by the `clamp_*` parameters in each view file. They are sized to
+how many lines fit above the author, so a quote is only cut off with an
+ellipsis when it would not fit; long quotes use a smaller text size to retain
+more text. Long unbroken words wrap within the quote
 column. A small left inset protects the opening characters from device
 font-rendering differences. Character artwork keeps its aspect ratio, has
 descriptive alt text, and uses Framework's `image-dither` utility so it can be

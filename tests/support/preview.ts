@@ -14,6 +14,17 @@ export const LARGE_QUOTE_SIZES: Record<
   half_horizontal: { short: "lg:text--xxlarge", long: "lg:text--xlarge" },
 };
 
+/** Max quote lines on large screens per view (see the view files in src/). */
+export const LARGE_QUOTE_CLAMPS: Record<
+  string,
+  { landscape: string; portrait: string }
+> = {
+  quadrant: { landscape: "9", portrait: "8" },
+  full: { landscape: "11", portrait: "17" },
+  half_vertical: { landscape: "17", portrait: "17" },
+  half_horizontal: { landscape: "8", portrait: "8" },
+};
+
 const BLOCKQUOTE_CONTENT = /(<blockquote\b[^>]*>)[\s\S]*?(<\/blockquote>)/;
 
 /** Preview screen classes for the TRMNL OG (1-bit) display. */

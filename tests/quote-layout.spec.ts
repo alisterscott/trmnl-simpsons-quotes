@@ -9,6 +9,7 @@ import {
   boxOf,
   computedPx,
   interceptRenderedHtml,
+  LARGE_QUOTE_CLAMPS,
   LARGE_QUOTE_SIZES,
   LONG_QUOTE_LENGTH,
   OG_SCREEN,
@@ -263,10 +264,13 @@ test("TRMNL X quote sizing prevents overflow and attribution overlap across view
 
           await expect(quoteElement).toHaveAttribute(
             "data-clamp-lg-portrait",
-            viewName === "quadrant" ? "6" : "3",
+            LARGE_QUOTE_CLAMPS[viewName].portrait,
+          );
+          await expect(quoteElement).toHaveAttribute(
+            "data-clamp-lg",
+            LARGE_QUOTE_CLAMPS[viewName].landscape,
           );
           if (viewName === "quadrant" && orientation === "landscape") {
-            await expect(quoteElement).toHaveAttribute("data-clamp-lg", "7");
             expect(await computedPx(name, "marginTop")).toBeGreaterThan(0);
             await expect(image).toHaveCSS("object-position", "50% 100%");
           }

@@ -5,8 +5,11 @@
     characters      the static_data characters (id, name, imageUrl, quotes)
     trmnl           the TRMNL context (for the selected character_ids setting)
     view_name       adds a `layout--<view_name>` class for per-view CSS
-    lg_clamp, lg_portrait_clamp
-                    max quote lines on large screens (landscape / portrait)
+    clamp_sm, clamp_md, clamp_lg
+    clamp_sm_portrait, clamp_md_portrait, clamp_lg_portrait
+                    max quote lines per screen size, landscape / portrait.
+                    Sized to what fits above the character name, so a quote
+                    is only cut off when it really would not fit.
     sm_size, lg_size
                     quote text size classes (base/md and lg breakpoints)
     sm_long_size, lg_long_size
@@ -70,19 +73,19 @@
   {% endif %}
 
   <div class="layout h--full layout--{{ view_name }}">
-    <div class="flex flex--row portrait:flex--col flex--stretch h--full">
+    <div class="flex flex--row portrait:flex--col h--full">
       <section class="w--[80cqw] lg:w--[75cqw] portrait:w--full h--full portrait:h--[65cqh] flex flex--col flex--top portrait:flex--center gap--distribute">
         <div class="content h--max-[70cqh] portrait:h--max-[52cqh]" data-content-limiter="true">
           <blockquote
             class="{{ quote_size }} {{ quote_size_lg }} pl--1"
             data-clamp="3"
-            data-clamp-sm="4"
-            data-clamp-md="5"
-            data-clamp-lg="{{ lg_clamp }}"
+            data-clamp-sm="{{ clamp_sm }}"
+            data-clamp-md="{{ clamp_md }}"
+            data-clamp-lg="{{ clamp_lg }}"
             data-clamp-portrait="4"
-            data-clamp-sm-portrait="4"
-            data-clamp-md-portrait="4"
-            data-clamp-lg-portrait="{{ lg_portrait_clamp }}"
+            data-clamp-sm-portrait="{{ clamp_sm_portrait }}"
+            data-clamp-md-portrait="{{ clamp_md_portrait }}"
+            data-clamp-lg-portrait="{{ clamp_lg_portrait }}"
           >&ldquo;{{ selected_quote | escape }}&rdquo;</blockquote>
         </div>
         <p class="text--base md:text--large lg:text--xxlarge" data-testid="character-name">
