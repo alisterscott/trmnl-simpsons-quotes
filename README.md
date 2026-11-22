@@ -177,8 +177,10 @@ and needs network access (TRMNL's CSS and the character artwork load from the
 internet).
 
 Options: `--all-devices` adds small and unusual screens (Playdate, Frame, Kobo
-Sage), `--devices og,x` and `--views quadrant` narrow the run, and `--strict`
-exits with an error if any problem is found. Device specs are defined at the
+Sage), `--devices og,x` and `--views quadrant` narrow the run, `--character
+cletus-spuckler` shows one character's shortest, typical and longest quote (handy
+for checking new artwork), and `--strict` exits with an error if any problem is
+found. Device specs are defined at the
 top of [`scripts/preview-report.js`](./scripts/preview-report.js).
 
 ## Run the tests

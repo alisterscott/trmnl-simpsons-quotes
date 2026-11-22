@@ -9,6 +9,9 @@
 //   npm run report -- --all-devices     include small/odd screens too
 //   npm run report -- --devices og,x    only some devices (see DEVICES below)
 //   npm run report -- --views quadrant  only some views
+//   npm run report -- --character cletus-spuckler
+//                                       one character's shortest, typical and
+//                                       longest quotes (check new artwork)
 //   npm run report -- --strict          exit 1 if any problem is found
 //
 // Needs network access: the preview loads TRMNL's CSS/JS, fonts and the
@@ -51,6 +54,7 @@ const { values: opts } = parseArgs({
     out: { type: "string", default: path.join(ROOT, "preview-report") },
     devices: { type: "string" },
     views: { type: "string" },
+    character: { type: "string" },
     "all-devices": { type: "boolean", default: false },
     port: { type: "string", default: process.env.TRML_PREVIEW_PORT ?? "4567" },
     open: { type: "boolean", default: false },
@@ -83,7 +87,20 @@ const longestWord = (quote) => Math.max(...quote.split(/\s+/).map((w) => w.lengt
 
 // Representative quotes chosen from the catalog by length, plus the one with
 // the longest unbroken word.
-function buildScenarios({ entries }) {
+function buildScenarios({ entries, characters }) {
+  if (opts.character) {
+    const character = characters.find((c) => c.id === opts.character);
+    if (!character) {
+      throw new Error(`Unknown character: ${opts.character}. Choose from: ${characters.map((c) => c.id).join(", ")}`);
+    }
+    const own = entries.filter((e) => e.character === character).sort((a, b) => a.quote.length - b.quote.length);
+    if (!own.length) throw new Error(`${character.name} has no quotes`);
+    return [
+      { id: "shortest", label: "Shortest", ...own[0] },
+      { id: "typical", label: "Typical", ...own[Math.floor(own.length / 2)] },
+      { id: "longest", label: "Longest", ...own[own.length - 1] },
+    ];
+  }
   const byLength = [...entries].sort((a, b) => a.quote.length - b.quote.length);
   const at = (fraction) => byLength[Math.min(byLength.length - 1, Math.floor(fraction * byLength.length))];
   const nearest = (n) => byLength.reduce((best, e) => (Math.abs(e.quote.length - n) < Math.abs(best.quote.length - n) ? e : best));
