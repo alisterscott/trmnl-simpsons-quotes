@@ -205,8 +205,8 @@
   {
     "id": "mr-burns",
     "name": "Mr. Burns",
-    "imageUrl": "https://static.simpsonswiki.com/images/9/9d/Charles_Montgomery_Burns.png",
-    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Charles_Montgomery_Burns.png",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/5/56/Mr_Burns.png",
+    "imagePageUrl": "https://en.wikipedia.org/wiki/File:Mr_Burns.png",
     "quotes": [
       "Excellent.",
       "Smithers, release the hounds!",
@@ -275,6 +275,110 @@
       "Ooh, my heart's pounding like Thor's hammer on Doctor Doom's titanium-infused faceplate!",
       "Stan Lee insulted me! But in Bizarro World, that means he likes me!",
       "My name is Jeff Albertson, but everybody calls me \"Comic Book Guy\"."
+    ]
+  },
+  {
+    "id": "moe-szyslak",
+    "name": "Moe Szyslak",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/8/80/Moe_Szyslak.png",
+    "imagePageUrl": "https://en.wikipedia.org/wiki/File:Moe_Szyslak.png",
+    "quotes": [
+      "Hello, Moe's Tavern. Birthplace of the Rob Roy.",
+      "I'm behind 3 inches of bullet-proof glass. Do your worst!",
+      "Wait no that was for the Voyager spacecraft. Your tab is $14 billion.",
+      "The deep fryer's here! I got it used from the Navy. You can flash-fry a buffalo in 40 seconds.",
+      "Well, it coulda been a real ugly situation but, luckily, I managed to shoot him in the spine.",
+      "Oh, for the love of crumb cake!",
+      "Yeah, yeah, you got a wife, I got a rash! Who cares?!",
+      "It's been four years since my last date with a whatchoo-call-it, uh, woman.",
+      "Aw, I'm gonna die, and I've never even tasted cantaloupe!",
+      "I've been called \"Ugly,\" \"Pug Ugly,\" \"Fugly,\" \"Pug Fugly.\" But never \"Ugly-Ugly!\"",
+      "Looks like me and Marge are both going to hell. That's when I'll make my move.",
+      "Uh, we don't like the word \"mutants\", Homer. We prefer \"freaks\" or \"monsters\".",
+      "Sounds like you're having a rough Christmas. You know what I blame this on the breakdown of? Society."
+    ]
+  },
+  {
+    "id": "krusty-the-clown",
+    "name": "Krusty the Clown",
+    "imageUrl": "https://static.simpsonswiki.com/images/1/17/Krusty_the_Clown.png",
+    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Krusty_the_Clown.png",
+    "quotes": [
+      "Hey, hey! Settle down boys and girls, or Krusty will have to bring out his old friend, Corporal Punishment again.",
+      "Oh, I can't go to jail! I got a swanky lifestyle! I'm used to the best!",
+      "Hey, yutz! Guns aren't toys! They're for family protection, hunting dangerous or delicious animals, and keepin' the King of England out of your face.",
+      "Have you noticed how there are two phone books: a white one and a yellow one. What's the deal with that?",
+      "So have a Merry Christmas, Happy Hanukkah, Krazy Kwanzaa, a Tip-Top Tet, and a solemn, dignified Ramadan. And now, a word from my god, our sponsor...",
+      "Listen, kid, I'm not the kind of dad who, you know, does things, or says stuff or looks at ya. But the love is there!",
+      "No, I got where I am today by naming names in the '50s!",
+      "I want to clear up a misconception about the Wha-Cha-Ma-Carcass Sandwich. I used 'non'-diseased meat from diseased animals! Everyone does it!",
+      "The winner will be animated into an Itchy & Scratchy cartoon! So enter today, especially if you're a funny-looking kid who doesn't know he sucks!",
+      "Ow, my schnoz! My punim! My pupik! My genechtagazoink!",
+      "Homer gave me a kidney once. It wasn't his, I didn't need it, and it came with postage due, but it was a lovely gesture.",
+      "Hey, I kid! I kid 'cause I love! I tell ya, the best folk in the world are prison folk!"
+    ]
+  },
+  {
+    "id": "milhouse-van-houten",
+    "name": "Milhouse Van Houten",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/1/11/Milhouse_Van_Houten.png",
+    "imagePageUrl": "https://en.wikipedia.org/wiki/File:Milhouse_Van_Houten.png",
+    "quotes": [
+      "You're lucky. You only joined the Junior Campers. I got a dirty word shaved into the back of my head.",
+      "I fear to watch! I cannot turn away!",
+      "Well, I didn't want hungry birds pecking my soul forever.",
+      "This is great, and all I've done is enter my name - \"Thrillhouse\"!",
+      "I was watching. I saw the whole thing. First it started falling over, then it fell over.",
+      "If you put dog doo on the suction cups, they'll stick better.",
+      "Well, remember when the last administration decided to invest in our nation's children? Big mistake.",
+      "Sounds like my parents' custody hearing.",
+      "Trust me Bart, it's better to walk in on both your parents instead of just one of them.",
+      "Uh, we're drunk. Really drunk."
+    ]
+  },
+  {
+    "id": "grampa-simpson",
+    "name": "Grampa Simpson",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/3/3e/Abe_Simpson.png",
+    "imagePageUrl": "https://en.wikipedia.org/wiki/File:Abe_Simpson.png",
+    "quotes": [
+      "Look at me! I'm acting young!",
+      "Welcome home, son. I broke two lamps and lost all your mail. What's wrong with your wife?",
+      "Who are you to complain? You locked me up in a home and give me the same damn shower safety seat every Christmas.",
+      "Big deal! When I was a pup, we got spanked by Presidents till the cows came home. Grover Cleveland spanked me on two non-consecutive occasions.",
+      "What are you cackling at, fatty?! Too much pie, that's your problem!",
+      "You're a give-'em-hell daredevil with a never-say-die attitude and a fourth-grade education. You could've made sergeant!",
+      "Oh, your dad used to be as smart as a monkey, then his mind started gettin' lazy and now he's as dumb as a chimp.",
+      "Hey! My IV is empty, and my catheter is full!",
+      "Settle a bet. Boil or mole?",
+      "My Homer is not a Communist. He may be a liar, a pig, an idiot, a Communist, but he is not a porn star!"
+    ]
+  },
+  {
+    "id": "professor-frink",
+    "name": "Professor Frink",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/7/71/Frink.png",
+    "imagePageUrl": "https://en.wikipedia.org/wiki/File:Frink.png",
+    "quotes": [
+      "This forms a three-dimensional object known as a cube, or a \"Frinkahedron,\" in honor of its discoverer, n-gl'hey, n'hey.",
+      "And these should give you the groundings you'll need in thermodynamics, hyperdmathematics, and of course, microbcalifragilistics.",
+      "Uh, ah, uh, sorry I'm late. There was trouble at the lab with the running and the exploding and the crying. One of the monkeys stole the glasses off my head.",
+      "Aw, for glaven out loud.",
+      "Well, it should be obvious to even the most dim-witted individual who holds an advanced degree in hyperbolic topology, n'gee, that Homer Simpson has stumbled into... the third di-mension."
+    ]
+  },
+  {
+    "id": "troy-mcclure",
+    "name": "Troy McClure",
+    "imageUrl": "https://static.simpsonswiki.com/images/f/f7/Troy_McClure.png",
+    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Troy_McClure.png",
+    "quotes": [
+      "Hi! I'm Troy McClure! You might remember me from such self-help videos as Smoke Yourself Thin and Get Confident, Stupid!",
+      "Hi, I'm Troy McClure. You may remember me from such medical films as \"Alice Doesn't Live Anymore\" and \"Mommy, What's Wrong with that Man's Face?\"",
+      "Hi, I'm Troy McClure. You may remember me from such nature films as Earwigs, Eww! and Man vs. Nature: The Road to Victory.",
+      "Hello, I'm Troy McClure! You might remember me from such celebrity funerals as \"André the Giant, We Hardly Knew Ye\" and \"Shemp Howard: Today We Mourn a Stooge.\"",
+      "Hello, I'm Troy McClure. You may remember me from such Fox Network specials as \"Alien Nose Job\" and \"Five Fabulous Weeks of the Chevy Chase Show.\"",
+      "I'm actor Troy McClure. You might remember me from such TV series as \"Buck Henderson, Union Buster\" and \"Troy and Company's Summertime Smile Factory\"."
     ]
   }
 ]

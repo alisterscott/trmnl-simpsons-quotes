@@ -22,6 +22,12 @@ test("character catalog contains extensible records", () => {
       "ned-flanders",
       "principal-skinner",
       "comic-book-guy",
+      "moe-szyslak",
+      "krusty-the-clown",
+      "milhouse-van-houten",
+      "grampa-simpson",
+      "professor-frink",
+      "troy-mcclure",
     ]),
   );
   expect(new Set(ids).size).toBe(ids.length);
@@ -75,6 +81,12 @@ test("host static data matches the editable character catalog", () => {
   expect(pluginData.options).toHaveProperty("Ned Flanders", "ned-flanders");
   expect(pluginData.options).toHaveProperty("Principal Skinner", "principal-skinner");
   expect(pluginData.options).toHaveProperty("Comic Book Guy", "comic-book-guy");
+  expect(pluginData.options).toHaveProperty("Moe Szyslak", "moe-szyslak");
+  expect(pluginData.options).toHaveProperty("Krusty the Clown", "krusty-the-clown");
+  expect(pluginData.options).toHaveProperty("Milhouse Van Houten", "milhouse-van-houten");
+  expect(pluginData.options).toHaveProperty("Grampa Simpson", "grampa-simpson");
+  expect(pluginData.options).toHaveProperty("Professor Frink", "professor-frink");
+  expect(pluginData.options).toHaveProperty("Troy McClure", "troy-mcclure");
   expect(pluginData.author_email).toBe("alister.scott@gmail.com");
 });
 
@@ -105,6 +117,8 @@ test("native Liquid quote selection respects character filters", () => {
     ["mr-burns,ned-flanders", ["mr-burns", "ned-flanders"]],
     ["principal-skinner", ["principal-skinner"]],
     ["comic-book-guy", ["comic-book-guy"]],
+    ["moe-szyslak", ["moe-szyslak"]],
+    ["professor-frink,troy-mcclure", ["professor-frink", "troy-mcclure"]],
     ["chief-wiggum,ralph-wiggum", ["chief-wiggum", "ralph-wiggum"]],
     ["ralph-wiggum,hans-moleman", ["ralph-wiggum", "hans-moleman"]],
     ['["chief-wiggum", "ralph-wiggum"]', ["chief-wiggum", "ralph-wiggum"]],
