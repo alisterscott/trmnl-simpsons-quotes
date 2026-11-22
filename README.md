@@ -171,7 +171,8 @@ The report is written to `preview-report/index.html` (git-ignored). It flags
 layout problems automatically (quote overlapping the character name, text
 running off the edge, cut-off names, broken images), marks truncated quotes,
 and lets you filter by device, view, orientation and quote; click a screenshot
-to enlarge it. It starts the preview server itself if it isn't already running
+to enlarge it. A problem is confirmed on a fresh render before it is reported;
+one that does not repeat is shown as "Unstable" instead of a failure. It starts the preview server itself if it isn't already running
 and needs network access (TRMNL's CSS and the character artwork load from the
 internet).
 

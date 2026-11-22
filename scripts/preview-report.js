@@ -197,6 +197,9 @@ function measureView() {
     name: box(name),
     textRight: Math.max(...[...range.getClientRects()].map((r) => r.right)),
     fontSize: parseFloat(getComputedStyle(quote).fontSize),
+    // What the clamp script measured vs the width the quote has now.
+    clampWidth: Number(quote.getAttribute("data-clamp-last-width")),
+    quoteWidth: quote.getBoundingClientRect().width,
     quoteText: normalise(quote.innerText),
     truncated: normalise(quote.innerText) !== normalise(quote.getAttribute("data-clamp-original")),
     characterName: normalise(name.innerText),
@@ -214,6 +217,34 @@ function findProblems(m) {
   return problems;
 }
 
+// Waits until the quote's layout stops changing. The framework script can make
+// another pass after it first marks the quote as cached, and under load that
+// pass can land after any fixed delay.
+async function waitForStableLayout(page) {
+  const sample = () =>
+    page.evaluate(() => {
+      const quote = document.querySelector("div.view blockquote");
+      const name = document.querySelector('div.view [data-testid="character-name"]');
+      return `${quote.getBoundingClientRect().height}|${quote.innerText.length}|${name.getBoundingClientRect().y}`;
+    });
+  let last = await sample();
+  let stableSamples = 0;
+  let changed = false;
+  const start = Date.now();
+  while (stableSamples < 4 && Date.now() - start < 5000) {
+    await page.waitForTimeout(150);
+    const now = await sample();
+    if (now === last) {
+      stableSamples++;
+    } else {
+      stableSamples = 0;
+      changed = true;
+      last = now;
+    }
+  }
+  return changed;
+}
+
 async function renderShot(context, baseUrl, job, rules, imagesDir) {
   const { device, orientation, view, scenario } = job;
   const page = await context.newPage();
@@ -227,11 +258,15 @@ async function renderShot(context, baseUrl, job, rules, imagesDir) {
     }
     const url = `${baseUrl}/render/${view}.html?screen_classes=${encodeURIComponent(screenClasses(device, orientation))}`;
     await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
-    // The framework script truncates the quote and then marks it as cached.
+    // The framework script runs several layout passes (text sizing, line
+    // clamping, ...) and sets TRMNL_PLUGINS_READY once all of them are done,
+    // which is the signal the device screenshot service waits for. Waiting only
+    // for the clamp attribute can catch a half-finished layout under load.
+    await page.waitForFunction(() => window.TRMNL_PLUGINS_READY === true, null, { timeout: 15000 });
     await page.locator('div.view blockquote[data-clamp-cached="true"]').waitFor({ timeout: 10000 });
     await page.evaluate(() => document.fonts.ready);
-    await page.waitForTimeout(300);
-    const metrics = await page.evaluate(measureView);
+    const layoutChanged = await waitForStableLayout(page);
+    const metrics = { ...(await page.evaluate(measureView)), layoutChanged };
     const file = `${job.id}.png`;
     await page.locator("div.view").screenshot({ path: path.join(imagesDir, file) });
     return { ...job, file, metrics, problems: findProblems(metrics) };
@@ -255,6 +290,16 @@ async function renderAll(browser, baseUrl, jobs, rules, imagesDir) {
           result = await renderShot(context, baseUrl, job, rules, imagesDir);
         } catch (error) {
           if (attempt === 2) result = { ...job, file: null, problems: [`Render failed: ${String(error).split("\n")[0]}`] };
+        }
+      }
+      // Confirm a problem on a fresh render before reporting it. A problem that
+      // disappears is kept as "unstable" rather than hidden.
+      if (result.file && result.problems.length) {
+        try {
+          const retry = await renderShot(context, baseUrl, job, rules, imagesDir);
+          if (!retry.problems.length) result = { ...retry, unstable: result.problems };
+        } catch {
+          // keep the original result
         }
       }
       results[index] = result;
@@ -333,9 +378,11 @@ function renderCard(r) {
   if (!r.problems.length) badges.push('<span class="badge ok">OK</span>');
   for (const p of r.problems) badges.push(`<span class="badge bad">${escapeHtml(p)}</span>`);
   if (m?.truncated) badges.push('<span class="badge warn">Truncated</span>');
+  if (r.unstable) badges.push(`<span class="badge warn" title="${escapeHtml(r.unstable.join("; "))}">Unstable</span>`);
   const detail = [
     r.problems.length ? `Problems:\n- ${r.problems.join("\n- ")}\n` : "No layout problems detected.\n",
-    m ? `Character: ${m.characterName}\nQuote (${m.quoteText.length} chars${m.truncated ? ", truncated" : ""}): ${m.quoteText}\nFont size: ${m.fontSize}px` : "",
+    r.unstable ? `Unstable: the first render showed "${r.unstable.join("; ")}" but a fresh render was clean.\n` : "",
+    m ? `Character: ${m.characterName}\nQuote (${m.quoteText.length} chars${m.truncated ? ", truncated" : ""}): ${m.quoteText}\nFont size: ${m.fontSize}px\nClamp measured width: ${Math.round(m.clampWidth)}px, actual: ${Math.round(m.quoteWidth)}px` : "",
   ].join("\n");
   const title = `${r.device.label} · ${r.orientation} · ${r.view} · ${r.scenario.label}`;
   const attrs = `data-id="${r.id}" data-view="${r.view}" data-orientation="${r.orientation}" data-scenario="${r.scenario.id}" data-problem="${r.problems.length ? 1 : 0}" data-title="${escapeHtml(title)}" data-detail="${escapeHtml(detail)}"`;
@@ -373,6 +420,11 @@ function renderReport({ results, devices, views, scenarios, meta }) {
 <details><summary>All problems</summary><ul>${problems.map((r) => `<li><a href="#${r.id}">${escapeHtml(describe(r))}</a>: ${escapeHtml(r.problems.join("; "))}</li>`).join("")}</ul></details></div>`
     : `<div class="banner"><strong>No layout problems detected</strong> in ${results.length} screenshots. Truncated quotes are marked but not counted as problems.</div>`;
 
+  const unstable = results.filter((r) => r.unstable);
+  const unstableNote = unstable.length
+    ? `<div class="banner" style="border-left-color:var(--warn)"><strong>${unstable.length} screenshot${unstable.length > 1 ? "s were" : " was"} unstable</strong>: a problem appeared on the first render but not on a fresh one (${unstable.map((r) => `<a href="#${r.id}">${escapeHtml(describe(r))}</a>`).join(", ")}).</div>`
+    : "";
+
   const scenarioRows = scenarios.map((s) => s.live
     ? `<tr><th>${s.label}</th><td colspan="3">The quote the preview picked at random for this render (no injection).</td></tr>`
     : `<tr><th>${escapeHtml(s.label)}</th><td>${s.quote.length}</td><td>${escapeHtml(s.character.name)}</td><td>${escapeHtml(s.quote)}</td></tr>`).join("");
@@ -384,6 +436,7 @@ function renderReport({ results, devices, views, scenarios, meta }) {
 <h1>Simpsons Quotes layout report</h1>
 <p class="meta">Generated ${escapeHtml(meta.generated)} · ${escapeHtml(meta.git)} · ${results.length} screenshots · ${devices.length} devices</p>
 ${banner}
+${unstableNote}
 <div class="controls">
   <label>Device <select data-filter="device"><option value="">All</option>${options(devices.map((d) => [d.id, d.label]))}</select></label>
   <label>View <select data-filter="view"><option value="">All</option>${options(views.map((v) => [v, v]))}</select></label>
@@ -443,7 +496,9 @@ async function main() {
     const reportPath = path.join(opts.out, "index.html");
     fs.writeFileSync(reportPath, renderReport({ results, devices, views, scenarios, meta }));
     const problems = results.filter((r) => r.problems.length).length;
-    console.log(`${results.length} screenshots, ${problems} with layout problems`);
+    const changed = results.filter((r) => r.metrics?.layoutChanged).length;
+    const unstable = results.filter((r) => r.unstable).length;
+    console.log(`${results.length} screenshots, ${problems} with layout problems (${unstable} unstable, ${changed} still changing after the framework reported ready)`);
     console.log(`Report: ${reportPath}`);
     if (opts.open) execFileSync(process.platform === "darwin" ? "open" : "xdg-open", [reportPath]);
     if (opts.strict && problems) process.exitCode = 1;
