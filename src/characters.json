@@ -183,5 +183,98 @@
       "Oh my gosh, it's an outhouse sent from the future.",
       "Be quiet robo-potty!"
     ]
+  },
+  {
+    "id": "lisa-simpson",
+    "name": "Lisa Simpson",
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/en/e/ec/Lisa_Simpson.png",
+    "imagePageUrl": "https://en.wikipedia.org/wiki/File:Lisa_Simpson.png",
+    "quotes": [
+      "Mom, romance is dead. It was acquired in a hostile takeover by Hallmark and Disney, homogenized, and sold off piece by piece.",
+      "I'm sorry Dad, I couldn't think of a nice way to say \"America Stinks.\"",
+      "Look on the bright side, Dad. Did you know that the Chinese use the same word for \"crisis\" as they do for \"opportunity\"?",
+      "Good luck, Dad. Although I'm morally opposed to the military-industrial complex of which you are now a part.",
+      "Dad, you can't take revenge on an animal. That's the whole point of Moby-Dick.",
+      "You're not mild-mannered. You're often liquored up and rude.",
+      "Well, you can't fight fate, but if you must shoot our father, please remember our family motto: \"Not in the face.\"",
+      "I am proud of you, mom! You are like Christopher Columbus - you discovered something millions of people knew about before you.",
+      "Stoats are weasels, Bart. They don't come in cans.",
+      "I've never been called \"fierce\" before. \"Strident.\" \"Hectoring\" has been tossed around."
+    ]
+  },
+  {
+    "id": "mr-burns",
+    "name": "Mr. Burns",
+    "imageUrl": "https://static.simpsonswiki.com/images/9/9d/Charles_Montgomery_Burns.png",
+    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Charles_Montgomery_Burns.png",
+    "quotes": [
+      "Excellent.",
+      "Smithers, release the hounds!",
+      "Hello, Smithers. You're. Quite. Good. At. Turning. Me. On.",
+      "I'll keep it short and sweet. Family, religion, friendship. These are the three demons you must slay if you wish to succeed in business.",
+      "Oh, so Mother Nature needs a favor?! Well, maybe she should have thought of that when she was besetting us with droughts and floods and poison monkeys!",
+      "Ah sitting, the great leveler. From the lowliest peasant to the mightiest pharaoh, who does not enjoy a good sit?",
+      "Why is that man in pink?!",
+      "Simpson, eh? Ah yes, I will have my lunch now. A single pillow of shredded wheat, some steamed toast, and a dodo egg.",
+      "You know, Smithers, \"I told you so\" has a brother. His name is, \"Shut the hell up\"!",
+      "Who is that man and why isn't his enthusiasm being punished?",
+      "Officers, arrest the baby!",
+      "Oh, fiddle faddle, everyone knows our mutants have flippers. Oops, I've said too much. Smithers, use the amnesia ray."
+    ]
+  },
+  {
+    "id": "ned-flanders",
+    "name": "Ned Flanders",
+    "imageUrl": "https://static.simpsonswiki.com/images/8/84/Ned_Flanders.png",
+    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Ned_Flanders.png",
+    "quotes": [
+      "Look! It's the four elephants of the Apocalypse!",
+      "You know, in times like these, I used to turn to the Bible for solace, but even the Good Book can't help me now.",
+      "I've done everything the Bible says, even the stuff that contradicts the other stuff!",
+      "Well, if you're talking about root beer, I plead guil-diddly-ilty as char-diddly-arged.",
+      "I just attacked all my friends and neighbors just for trying to help me. I'd like to commit myself.",
+      "I can't believe my last words to Maude were, \"No foot-longs.\"",
+      "Well, we're gonna do what every kid your age likes to do: look at bread.",
+      "Looks like heaven's easier to get into than Arizona State.",
+      "Was that, uh, was that toilet always next to the refrigerator?",
+      "Stop praying to that stork!",
+      "Maude, it's a miracle! The Lord has drowned the wicked and spared the righteous."
+    ]
+  },
+  {
+    "id": "principal-skinner",
+    "name": "Principal Skinner",
+    "imageUrl": "https://static.simpsonswiki.com/images/3/3a/Seymour_Skinner.png",
+    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Seymour_Skinner.png",
+    "quotes": [
+      "Uh... Oh! That isn't smoke, it's steam! Steam from the steamed clams we're having! Mmm, steamed clams!",
+      "Superintendent! I was just, uh, stretching my calves on the windowsill. Isometric exercise! Care to join me?",
+      "Ho, ho, ho, ho, no. Patented Skinner Burgers. Old family recipe!",
+      "Oh, not in Utica, no. It's an Albany expression.",
+      "No, mother, it's just the Northern Lights.",
+      "He's embiggened that role with his cromulent performance.",
+      "Uh-oh. Two independent thought alarms in one day. The students are overstimulated. Willie, remove all the colored chalk from the classrooms.",
+      "Your child's behavior appalls me, not just as a principal, but as a veteran of America's only losing war!",
+      "Homer, this bachelor party seems to have peaked. Could you please return my pants and/or underpants so I can go home?",
+      "And, for the first time ever, our computer lab actually has a computer in it."
+    ]
+  },
+  {
+    "id": "comic-book-guy",
+    "name": "Comic Book Guy",
+    "imageUrl": "https://static.simpsonswiki.com/images/9/9d/Comic_Book_Guy.png",
+    "imagePageUrl": "https://simpsonswiki.com/wiki/File:Comic_Book_Guy.png",
+    "quotes": [
+      "Worst. Episode. Ever.",
+      "Oh, please. If I wanted to hear mindless droning, I'd befriend an air conditioner.",
+      "I'll pass. Beer is the nectar of the nitwit.",
+      "Oh! It appears I will have to find a new Fortress of Solitude.",
+      "Yes, this should provide adequate sustenance for the Doctor Who marathon.",
+      "No, you may not. I am all out, though I do have a surprising abundance of Lee Carvallo's Putting Challenge.",
+      "Tell me, how do you feel about 45-year-old virgins who still live with their parents?",
+      "Ooh, my heart's pounding like Thor's hammer on Doctor Doom's titanium-infused faceplate!",
+      "Stan Lee insulted me! But in Bizarro World, that means he likes me!",
+      "My name is Jeff Albertson, but everybody calls me \"Comic Book Guy\"."
+    ]
   }
 ]

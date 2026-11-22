@@ -119,8 +119,8 @@ During rendering, native Liquid selects a random quote from the selected
 characters' quote pool. With no selections, all characters with quotes are
 eligible. The selection is recalculated on each render.
 
-Hans Moleman and Cletus Spuckler are available as character options. Wikipedia
-does not have standalone images for them, so their artwork links to Wikisimpsons.
+Artwork for most characters is hosted by Wikipedia or Wikisimpsons (see each
+character's `imagePageUrl` for the source and licence page).
 
 ## Quote layout
 
