@@ -15,6 +15,7 @@
   "type": "commonjs",
   "scripts": {
     "sync:quotes": "node scripts/sync-static-data.js",
+    "report": "node scripts/preview-report.js",
     "test": "npx playwright test"
   },
   "devDependencies": {

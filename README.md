@@ -155,6 +155,29 @@ custom_fields:
   character_ids: homer-simpson,ralph-wiggum
 ```
 
+## Check the layout visually
+
+Generate an HTML report that renders the plugin on a range of devices, in both
+orientations, in every view, with short, typical, long, longest and long-word
+quotes:
+
+```sh
+npm run report -- --open
+```
+
+The report is written to `preview-report/index.html` (git-ignored). It flags
+layout problems automatically (quote overlapping the character name, text
+running off the edge, cut-off names, broken images), marks truncated quotes,
+and lets you filter by device, view, orientation and quote; click a screenshot
+to enlarge it. It starts the preview server itself if it isn't already running
+and needs network access (TRMNL's CSS and the character artwork load from the
+internet).
+
+Options: `--all-devices` adds small and unusual screens (Playdate, Frame, Kobo
+Sage), `--devices og,x` and `--views quadrant` narrow the run, and `--strict`
+exits with an error if any problem is found. Device specs are defined at the
+top of [`scripts/preview-report.js`](./scripts/preview-report.js).
+
 ## Run the tests
 
 Playwright starts the TRMNL preview server automatically when needed:
