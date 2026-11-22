@@ -32,6 +32,21 @@ export const OG_SCREEN = "screen screen--1bit screen--ogv2 screen--md screen--1x
 /** Preview screen classes for the TRMNL X (large, 4-bit) display. */
 export const X_SCREEN = "screen screen--v2 screen--lg screen--density-2x screen--4bit";
 
+/**
+ * Real device screens as the preview's picker renders them: CSS pixel size
+ * (device pixels / scale factor, landscape) and screen classes.
+ */
+export const DEVICE_SCREENS = {
+  "TRMNL OG": {
+    viewport: { width: 800, height: 480 },
+    classes: OG_SCREEN,
+  },
+  "TRMNL X": {
+    viewport: { width: 1040, height: 780 },
+    classes: "screen screen--4bit screen--v2 screen--lg screen--1x",
+  },
+};
+
 export type Orientation = "landscape" | "portrait";
 
 /** URL of a single rendered view, e.g. /render/quadrant.html?screen_classes=... */

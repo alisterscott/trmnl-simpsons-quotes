@@ -198,5 +198,6 @@ The HTML report is generated in `playwright-report/`.
 
 Tests live in `tests/`: `characters.spec.ts` checks the catalog, the synced
 static data and quote filtering, and `quote-layout.spec.ts` checks the rendered
-layout in each view. Shared helpers (catalog loading, preview URLs, quote
+layout in each view, and `device-layout.spec.ts` checks the column split and
+attribution alignment at real TRMNL OG and TRMNL X screen sizes. Shared helpers (catalog loading, preview URLs, quote
 injection) are in `tests/support/`.
