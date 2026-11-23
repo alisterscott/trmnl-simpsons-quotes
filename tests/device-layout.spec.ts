@@ -14,7 +14,7 @@ const ORIENTATIONS: Orientation[] = ["landscape", "portrait"];
 // The framework's `flex--stretch` once forced the two columns to equal size,
 // silently overriding the template's width/height classes. These tests run at
 // real device sizes and check the split that actually renders.
-test("quote and artwork columns split as designed on real device screens", async ({
+test("quote and artwork columns split as designed and stay inside the view on real device screens", async ({
   page,
 }) => {
   for (const [deviceName, device] of Object.entries(DEVICE_SCREENS)) {
@@ -36,8 +36,31 @@ test("quote and artwork columns split as designed on real device screens", async
             timeout: 15000,
           });
 
+          const layoutBox = await boxOf(page.locator(".layout"), "Layout");
           const textBox = await boxOf(page.locator("section"), "Text column");
           const artBox = await boxOf(page.locator(".character-art"), "Artwork");
+
+          // The view clips anything outside the layout. A row wider than the
+          // layout (the columns plus a gap) once cut off the right edge of the
+          // artwork and the left edge of the quote in the full view.
+          for (const [part, box] of [
+            ["Text column", textBox],
+            ["Artwork", artBox],
+          ] as const) {
+            expect(box.x, `${part} left edge`).toBeGreaterThanOrEqual(
+              layoutBox.x - 0.5,
+            );
+            expect(box.x + box.width, `${part} right edge`).toBeLessThanOrEqual(
+              layoutBox.x + layoutBox.width + 0.5,
+            );
+            expect(box.y, `${part} top edge`).toBeGreaterThanOrEqual(
+              layoutBox.y - 0.5,
+            );
+            expect(box.y + box.height, `${part} bottom edge`).toBeLessThanOrEqual(
+              layoutBox.y + layoutBox.height + 0.5,
+            );
+          }
+
           if (orientation === "landscape") {
             // 80/20, or 75/25 on large screens, of the width
             const expected = deviceName === "TRMNL X" ? 0.75 : 0.8;

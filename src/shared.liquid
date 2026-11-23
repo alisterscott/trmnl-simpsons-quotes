@@ -125,7 +125,12 @@
   {% endif %}
 
   <div class="layout h--full layout--{{ view_name }}">
-    <div class="flex flex--row portrait:flex--col h--full">
+    {% comment %}
+      No gap: the columns already add up to 100% of the view (80% + 20%), so a
+      gap would push the row wider than the view and clip the artwork's right
+      edge and the quote's left edge in the full view.
+    {% endcomment %}
+    <div class="flex flex--row portrait:flex--col gap--none w--full h--full">
       <section class="w--[80cqw] lg:w--[75cqw] portrait:w--full h--full portrait:h--[65cqh] flex flex--col flex--left">
         <div class="content h--max-[70cqh] portrait:h--max-[52cqh]" data-content-limiter="true">
           <blockquote
